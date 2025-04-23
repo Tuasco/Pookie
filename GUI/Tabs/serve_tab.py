@@ -16,5 +16,5 @@ class Serve_Tab(tk.Frame):
     
         
         # Create a button to serve the dish
-        self.serve_button = tk.Button(self, text="Serve", command=self.serve_dish)
+        self.serve_button = tk.Button(self, text="Serve")
         self.serve_button.pack(pady=10)

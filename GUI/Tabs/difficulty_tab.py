@@ -9,19 +9,33 @@ class Game_difficulty_Tab(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         
-        # Create a label for the game difficulty tab
-        label = tk.Label(self, text="Select Game Difficulty", font=("Helvetica", 16))
-        label.pack(pady=10)
+         # Title
+        title = tk.Label(self, text="Choose\ndifficulty", font=("Helvetica", 24), justify="center")
+        title.pack(pady=40)
         
-        # Create buttons for different difficulty levels
-        button1 = tk.Button(self, text="Easy", command=lambda: self.set_difficulty("Easy"))
-        button1.pack(pady=5)
+        # Difficulty selection
+        self.difficulty = tk.StringVar(value="easy")  # default
+
+        options = [("easy", "easy"), ("medium", "medium"), ("hard", "hard")]
+        button_frame = tk.Frame(self)
+        button_frame.pack(pady=20)
         
-        button2 = tk.Button(self, text="Medium", command=lambda: self.set_difficulty("Medium"))
-        button2.pack(pady=5)
+        # Button to confirm selection
         
-        button3 = tk.Button(self, text="Hard", command=lambda: self.set_difficulty("Hard"))
-        button3.pack(pady=5)
+        def confirm_difficulty():
+            # Store the selected difficulty in the controller
+            selected = self.difficulty.get()
+            self.controller.game_difficulty = selected  # <— store it globally
+            self.controller.show_frame("Order_Tab")     # go to next tab
+
+        confirm_button = tk.Button(self, text="Confirm", command=confirm_difficulty, font=("Helvetica", 16))
+        confirm_button.pack(pady=20)
+
+        for text, value in options:
+            rb = tk.Radiobutton(button_frame, text=text, variable=self.difficulty, value=value, font=("Helvetica", 16))
+            rb.pack(side="left", padx=20)
+    
+
         
 if __name__=="__main__":
     root = tk.Tk()
