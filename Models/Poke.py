@@ -13,7 +13,7 @@ class Poke:
         return f"Base: {self.base}, VFT: {self.vft}, Sauce: {self.sauce}, Protein: {self.protein}, Cook Time: {self.cookTime}"
     
 
-    def add_base(self, base: str):
+    def add_base(self, base: str) -> 'Poke':
         """
         Add a certain base by name at a certain position
         """
@@ -24,7 +24,7 @@ class Poke:
         return self
 
 
-    def add_vft(self, vft: VFT):
+    def add_vft(self, vft: VFT) -> 'Poke':
         """
         Add a certain VFT (Vegetable, Fruit or Topping) by name at a certain position
         """
@@ -37,7 +37,7 @@ class Poke:
         return self
     
 
-    def remove_vft(self, vft: VFT):
+    def remove_vft(self, vft: VFT) -> 'Poke':
         """
         Remove a certain VFT (Vegetable, Fruit or Topping) by name at a certain position
         """
@@ -48,7 +48,7 @@ class Poke:
         return self
     
 
-    def add_sauce(self, sauce: str):
+    def add_sauce(self, sauce: str) -> 'Poke':
         """
         Add a certain sauce by name at a certain position
         """
@@ -59,7 +59,7 @@ class Poke:
         return self
     
 
-    def add_protein(self, protein: Protein):
+    def add_protein(self, protein: Protein) -> 'Poke':
         """
         Add a certain protein by name at a certain position
         """

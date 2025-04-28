@@ -8,5 +8,6 @@ class Order:
         self.preparedPoke = Poke()
         self.orderTime = orderTime
 
-    def __str__(self):
+
+    def __str__(self) -> str:
         return f"Order ID: {self.order_id}, Poke: {self.orderedPoke}, Order Time: {self.orderTime}"
