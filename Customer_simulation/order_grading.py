@@ -79,3 +79,8 @@ def check_cooking_time(order, threshold):
 
 def score(order) : 
     '''calculates score based on the previous functions'''
+    # Hey c Yassine, dès que t'auras fini cette fonction, tu pourrais tout mettre dans la classe poké ?
+    # Je pense que ça serait plus logique, et ça nous permettrait de pas avoir à faire des imports dans le main
+    # Aussi, j'ai déjà crée une methode vide compare(self, poke: 'Poke'), qui prend un poké et qui le compare à l'instance courante
+    # Tu pourrais l'utiliser pour faire la comparaison entre le poké commandé et le poké préparé, ça serait plus propre
+    # Merciiii <3
