@@ -1,7 +1,5 @@
 import tkinter as tk
-
-import tkinter as tk
-import json, random
+import random
 
 # Just for the demo — load from file in practice
 clients = [
@@ -31,10 +29,12 @@ class Order_Tab(tk.Frame):
 
         self.show_random_client()
 
+
     def show_random_client(self):
         client = random.choice(clients)
         self.draw_stickman(trait=client["trait"])
         self.speech.config(text=client["order"])
+
 
     def draw_stickman(self, trait=""):
         c = self.stickman_canvas
@@ -90,7 +90,16 @@ class Order_Tab(tk.Frame):
             c.create_oval(105, 65, 120, 80)  # monocle
             c.create_line(120, 70, 130, 70)  # string
 
-        
+    
+    def add_order(self, timer):
+        # This function would add an order to the list of orders
+        # For now, just print it
+        if timer % 30 != 0:
+            return
+
+        print(f"Order added")
+
+
 if __name__=="__main__":
     root = tk.Tk()
     app = Order_Tab(parent=root, controller=None)

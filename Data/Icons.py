@@ -31,45 +31,45 @@ class Icons:
 
 
 
+if __name__ == "main":
+    root = tk.Tk()
+    root.title("Food Icons from PNG")
 
-root = tk.Tk()
-root.title("Food Icons from PNG")
+    canvas = tk.Canvas(root, width=800, height=600, bg="white")
+    canvas.pack()
 
-canvas = tk.Canvas(root, width=800, height=600, bg="white")
-canvas.pack()
+    icons = Icons(canvas)  # Might need to modify the path
 
-icons = Icons(canvas)  # Might need to modify the path
+    # Example: place a few icons on the canvas
+    positions = [
+        ("avocado", 100, 100),
+        ("beet",150,100),
+        ("broc",200,100),
+        ("carrot",250,100),
+        ("chicken",300,100),
+        ("corn",350,100),
+        ("cucumber",400,100),
+        ("dragon_fruit",450,100),
+        ("edamame",500,100),
+        ("egg",550,100),
+        ("kiwi",100,200),
+        ("lemon",150,200),
+        ("meat",200,200),
+        ("melon",250,200),
+        ("mint",300,200),
+        ("mushroom",350,200),
+        ("onion",400,200),
+        ("peas",450,200),
+        ("raspberry",500,200),
+        ("salad",550,200),
+        ("salmon",100,300),
+        ("shrimp",150,300),
+        ("tofu",200,300),
+        ("tomato",250,300),
+        ("watermelon",300,300)
+    ]
 
-# Example: place a few icons on the canvas
-positions = [
-    ("avocado", 100, 100),
-    ("beet",150,100),
-    ("broc",200,100),
-    ("carrot",250,100),
-    ("chicken",300,100),
-    ("corn",350,100),
-    ("cucumber",400,100),
-    ("dragon_fruit",450,100),
-    ("edamame",500,100),
-    ("egg",550,100),
-    ("kiwi",100,200),
-    ("lemon",150,200),
-    ("meat",200,200),
-    ("melon",250,200),
-    ("mint",300,200),
-    ("mushroom",350,200),
-    ("onion",400,200),
-    ("peas",450,200),
-    ("raspberry",500,200),
-    ("salad",550,200),
-    ("salmon",100,300),
-    ("shrimp",150,300),
-    ("tofu",200,300),
-    ("tomato",250,300),
-    ("watermelon",300,300)
-]
+    for name, x, y in positions:
+        icons.draw_icon(name, x, y)
 
-for name, x, y in positions:
-    icons.draw_icon(name, x, y)
-
-root.mainloop()
+    root.mainloop()

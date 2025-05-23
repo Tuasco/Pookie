@@ -1,7 +1,5 @@
 import tkinter as tk
-import sys
-sys.path.append("../../Data")  # Adjust the path to import Icons from the parent directory
-from ...Data.Icons import Icons
+from Data.Icons import Icons
 
 class Base_Tab(tk.Frame):
     """Class generating the base tab of the GUI. Allowing user to pick the base of the pokebowl."""

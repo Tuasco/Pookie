@@ -1,8 +1,12 @@
-import tkinter as tk 
-from Tabs import difficulty_tab, order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+import tkinter as tk
+import threading
+from time import sleep
+from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 
-tab_classes=[difficulty_tab.Game_difficulty_Tab, 
-             order_tab.Order_Tab, 
+import sys, os, inspect
+sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
+
+tab_classes=[order_tab.Order_Tab, 
              base_tab.Base_Tab, 
              veg_fruit_tab.Veg_Fruit_Tab, 
              protein_tab.Protein_Tab, 
@@ -17,7 +21,8 @@ class PookieGUI(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Pookie")
-        self.geometry("800x600")   
+        self.geometry("800x600")
+        self.timer = 0
         
         # Top navigation bar
         nav_bar = tk.Frame(self, bg="lightgray")
@@ -49,7 +54,8 @@ class PookieGUI(tk.Tk):
             self.pages[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
             
-        self.show_frame("Game_difficulty_Tab")
+        self.sec_loop()
+
         
     def show_frame(self, page_name):
         """
@@ -113,6 +119,19 @@ class PookieGUI(tk.Tk):
             label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
 
 
+    def sec_loop(self):
+        """
+        This function can be used to update the GUI or perform background tasks.
+        It is called every second.
+        """
+        # Add new order
+        self.pages["Order_Tab"].add_order(self.timer)
+
+        self.timer += 1
+        self.after(1000, self.sec_loop)
+
+
 if __name__=="__main__":
     app = PookieGUI()
     app.mainloop()
+    

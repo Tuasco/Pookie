@@ -1,5 +1,5 @@
-from VFT import VFT
-from Protein import Protein
+from Models.VFT import VFT
+from Models.Protein import Protein
 
 class Poke:
     def __init__(self, base: str = None, vft: list[VFT] = [], sauce: str = None, protein: Protein = None) -> None:
