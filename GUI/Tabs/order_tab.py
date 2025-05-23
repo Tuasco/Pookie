@@ -1,7 +1,5 @@
 import tkinter as tk
-
-import tkinter as tk
-import json, random
+import random
 
 # Just for the demo — load from file in practice
 clients = [

@@ -1,5 +1,9 @@
 import tkinter as tk 
-from Tabs import difficulty_tab, order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from GUI.Tabs import difficulty_tab, order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from Models.Game import Game
+
+import sys, os, inspect
+sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
 tab_classes=[difficulty_tab.Game_difficulty_Tab, 
              order_tab.Order_Tab, 
