@@ -25,10 +25,12 @@ class Order_Tab(tk.Frame):
 
         self.show_random_client()
 
+
     def show_random_client(self):
         client = random.choice(clients)
         self.draw_stickman(trait=client["trait"])
         self.speech.config(text=client["order"])
+
 
     def draw_stickman(self, trait=""):
         c = self.stickman_canvas
@@ -47,6 +49,16 @@ class Order_Tab(tk.Frame):
             c.create_line(95, 72, 105, 72)
         elif trait == "hat":
             c.create_rectangle(65, 40, 135, 55, fill="black")
+
+    
+    def add_order(self, timer):
+        # This function would add an order to the list of orders
+        # For now, just print it
+        if timer % 30 != 0:
+            return
+
+        print(f"Order added")
+
 
 if __name__=="__main__":
     root = tk.Tk()
