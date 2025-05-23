@@ -34,7 +34,8 @@ class Fire:
         cookTime = time() - self.startTime
         self.protein.terminateCooking(cookTime)
 
+        prot = self.protein
         self.protein = None
         self.startTime = None
 
-        return round(cookTime)
+        return prot

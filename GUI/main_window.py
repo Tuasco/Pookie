@@ -113,8 +113,6 @@ class PookieGUI(tk.Tk):
             label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
 
 
-        
-    
 if __name__=="__main__":
     app = PookieGUI()
     app.mainloop()
