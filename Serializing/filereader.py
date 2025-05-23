@@ -10,7 +10,7 @@ def file_reader(filename) :
     orders=[] #list of Order objects
 
     for ligne in reader:
-        order_id, orderTime, base, vft, sauce, protein, cookTime = ligne
+        order_id, base, vft, sauce, protein, cookTime = ligne
         vft_list = vft.split(',')
                 
         for ingredient in vft_list :
@@ -20,7 +20,9 @@ def file_reader(filename) :
                 dico_vft[ingredient]=(0,0)
 
         orderedPoke = Poke(base,dico_vft,sauce,protein,cookTime)
-        order = Order(order_id, orderedPoke, None, orderTime) #preparedPoke initialized as None at the beginning
+
+
+        order = Order(order_id, orderedPoke, None, None) #preparedPoke initialized as None at the beginning #orderTime initialized as None too until order is assigned
 
         orders.append(order)
 
