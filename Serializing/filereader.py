@@ -11,7 +11,7 @@ def file_reader(filename) :
 
     for ligne in reader:
         order_id, base, vft, sauce, protein, cookTime = ligne
-        vft_list = vft.split(',')
+        vft_list = vft.split(';')
                 
         for ingredient in vft_list :
             if ingredient in dico_vft.keys():
