@@ -108,19 +108,18 @@ class PookieGUI(tk.Tk):
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        # Example dummy orders
-        for i in range(5):
-            order_id = f"Order #{1000+i}"
-            label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
-                            bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5)
-            label.pack(pady=4, fill="x", padx=5)
 
-            # Store reference to the label
-            self.order_receipts.append((order_id, label))
+    def add_order_to_panel(self):
+        order_id = f"Order #{1000+len(self.order_receipts)}"
+        label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
+                        bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5)
+        label.pack(pady=4, fill="x", padx=5)
 
-            # Add click binding
-            label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
+        # Store reference to the label
+        self.order_receipts.append((order_id, label))
 
+        # Add click binding
+        label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
 
     def sec_loop(self):
         """
@@ -128,7 +127,7 @@ class PookieGUI(tk.Tk):
         It is called every second.
         """
         # Add new order
-        self.pages["Order_Tab"].add_order(self.timer)
+        self.pages["Order_Tab"].show_random_client(self.timer)
 
         self.timer += 1
         self.after(1000, self.sec_loop)
