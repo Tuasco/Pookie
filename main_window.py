@@ -1,12 +1,13 @@
 import tkinter as tk
 import threading
 from time import sleep
-from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from GUI.Tabs import difficulty_tab, order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 
 import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
-tab_classes=[order_tab.Order_Tab, 
+tab_classes=[difficulty_tab.Game_difficulty_Tab,
+             order_tab.Order_Tab, 
              base_tab.Base_Tab, 
              veg_fruit_tab.Veg_Fruit_Tab, 
              protein_tab.Protein_Tab, 
@@ -53,6 +54,8 @@ class PookieGUI(tk.Tk):
             frame = page(parent=self.container, controller=self)
             self.pages[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("Order_Tab")  # Show the first page by default
             
         self.sec_loop()
 
