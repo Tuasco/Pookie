@@ -108,10 +108,6 @@ class PookieGUI(tk.Tk):
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        # Example dummy orders
-        for i in range(5):
-            self.add_order_to_panel()
-
 
     def add_order_to_panel(self):
         order_id = f"Order #{1000+len(self.order_receipts)}"
