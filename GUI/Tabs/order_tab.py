@@ -4,20 +4,20 @@ from Models.Poke import Poke
 
 # Just for the demo — load from file in practice
 clients = [
-    #{"trait": "red hat", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "biker", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
-    #{"trait": "happy face and hat", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
-    #{"trait": "sad", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
-    #{"trait": "stylish", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
-    #{"trait": "sunglasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "glasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "nerd", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "artist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "worker", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "superhero", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "scientist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "royalty", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "villain", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "red hat", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "biker", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
+    {"trait": "happy face and hat", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
+    {"trait": "sad", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
+    {"trait": "stylish", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
+    {"trait": "sunglasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "glasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "nerd", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "artist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "worker", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "superhero", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "scientist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "royalty", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    {"trait": "villain", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
     
 ]
 
@@ -85,10 +85,16 @@ class Order_Tab(tk.Frame):
             c.create_line(105, 65, 115, 60)
             c.create_arc(85, 85, 115, 105, start=0, extent=180, style=tk.ARC)
         elif trait == "royalty":
-            c.create_oval(85, 65, 95, 75, fill="black")
-            c.create_oval(105, 65, 115, 75, fill="black")
+            # Eyes
+            c.create_oval(85, 65, 95, 75, fill="black")   # Left eye
+            c.create_oval(105, 65, 115, 75, fill="black")  # Right eye
+            # Smile
             c.create_arc(85, 80, 115, 100, start=0, extent=-180, style=tk.ARC)
+            # Crown
             c.create_polygon(85, 50, 90, 40, 100, 50, 110, 40, 115, 50, fill="gold", outline="black")
+            # Earrings (small golden dots)
+            c.create_oval(70, 85, 75, 90, fill="gold")  # Left earring
+            c.create_oval(125, 85, 130, 90, fill="gold")  # Right earring
         elif trait == "scientist":
             c.create_rectangle(80, 65, 95, 80, fill="lightblue")
             c.create_rectangle(105, 65, 120, 80, fill="lightblue")
