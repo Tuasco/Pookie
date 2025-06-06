@@ -2,29 +2,27 @@ from Models.Order import Order
 from Models.Poke import Poke
 import math
 from itertools import chain
-
-
-#score distribution : 100 = 40(match ingredients)+ 30(toppings position)+ 30(cooking time)
+from datetime import datetime
 
 
 class GameOrder : #class for an active order in the game (order to evaluate and grade)
 
     def __init__(self, score) :
-        self.score = 100
+        self.score = {'presentation':100, 'taste':100, 'preparation time': 100}
 
 
-    def is_ingredients_match(self) :
+    def is_ingredients_match(self) : 
         ordered = self.orderedPoke
         prepared = self.preparedPoke
 
         if ordered.base != prepared.base :
-            self.score -= 10
+            self.score['taste'] -= 15
 
         if ordered.sauce != prepared.sauce :
-            self.score -= 10
+            self.score['taste'] -= 15
 
         if ordered.vft.keys() != prepared.vft.keys() :
-            self.score -= 20
+            self.score['taste'] -= 40
 
 
 
@@ -61,22 +59,40 @@ class GameOrder : #class for an active order in the game (order to evaluate and 
         toppings_balanced = total_dist/pair_count <= lim_dist_toppings
         
         if not toppings_contained :
-            self.score -= 10
+            self.score['presentation'] -= 40
         
         if not toppings_balanced : 
-            self.score -= 20
+            self.score['presentation'] -= 40
 
 
 
 
 
-    def check_cooking_time(self, threshold):
-        
+    def check_cooking_time(self):
+
         diff_cook_time = (abs(self.orderedPoke.cookTime - self.preparedPoke.cookTime))/self.orderedPoke.cookTime #difference in percentage between the expected and the actual cooking time
+        if diff_cook_time > 1 : 
+            diff_cook_time = 1
 
-        self.score -= diff_cook_time * 30
+        self.score['taste'] -= diff_cook_time * 30
 
 
+
+
+    def compare_preparation_time(self, threshold) : #threshold something in minutes
+        finish_time = ((datetime.now())).time()
+
+        today = datetime.today().date()
+        finish_dt = datetime.combine(today, finish_time)
+        reference_dt = datetime.combine(today, self.orderTime)
+
+        time_difference = finish_dt - reference_dt
+
+        time_diff_minutes = time_difference.total_seconds() / 60
+
+        if time_diff_minutes > threshold : 
+            time_gap = abs((threshold - time_diff_minutes)/threshold) #diff in percentage between the threshold and the actual preparation time
+            self.score['preparation time'] -= time_gap * 100
 
 
 

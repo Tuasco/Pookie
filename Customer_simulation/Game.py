@@ -14,6 +14,8 @@ class Game :
         orders = file_reader(self.filename)
         selected_order = random.choice(orders) #modify to have the selected order disappear from the orders list ?
 
+        selected_order.orderTime = ((datetime.now())).time()
+
         self.orders.append(selected_order)
 
 
