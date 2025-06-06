@@ -1,13 +1,10 @@
 import tkinter as tk
-import threading
-from time import sleep
-from GUI.Tabs import difficulty_tab, order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 
 import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
-tab_classes=[difficulty_tab.Game_difficulty_Tab,
-             order_tab.Order_Tab, 
+tab_classes=[order_tab.Order_Tab, 
              base_tab.Base_Tab, 
              veg_fruit_tab.Veg_Fruit_Tab, 
              protein_tab.Protein_Tab, 
@@ -110,7 +107,7 @@ class PookieGUI(tk.Tk):
 
 
     def add_order_to_panel(self):
-        order_id = f"Order #{1000+len(self.order_receipts)}"
+        order_id = f"Order #{1001+len(self.order_receipts)}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
                         bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5)
         label.pack(pady=4, fill="x", padx=5)
