@@ -22,7 +22,7 @@ class PookieGUI(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Pookie")
-        self.geometry("800x600")
+        self.attributes("-fullscreen", True)
         self.timer = 0
         self.selected_order = None
         self.orders = []  # List to keep track of all orders
