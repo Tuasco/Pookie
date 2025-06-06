@@ -11,7 +11,7 @@ protein_list = ['chicken', 'shrimp', 'tofu', 'salmon', 'meat']
 trait_list = ['hat', 'glasses'] #ADD new traits
 
 
-output_file = 'orders_csv.csv'
+output_file = 'orders.csv'
 
 
 with open(output_file, mode='w', newline='', encoding='utf-8') as file :
@@ -30,10 +30,7 @@ with open(output_file, mode='w', newline='', encoding='utf-8') as file :
          cooking_time = random.randint(3,10)
          trait = random.choice(trait_list)
          
-         vft = random.choices(vft_list, k=random.randint(3,15)) #if we want non-repeating elements, change to random.sample
+         vft = random.sample(vft_list, k=random.randint(3,15)) #if we want non-repeating elements, change to random.sample
          vft_all = ';'.join(vft)
          
          writer.writerow([i, base, vft_all, sauce, protein, cooking_time, trait])
-         
-         
-         

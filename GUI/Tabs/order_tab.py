@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
 from time import sleep
+from Customer_relation.filereader import file_reader
 
 # Just for the demo — load from file in practice
 clients = [
@@ -11,6 +12,13 @@ clients = [
     {"trait": "stylish", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
     
 ]
+
+
+
+orders = file_reader('orders.csv') #list of Orders instances Order(order_id, orderedPoke, preparedPoke, orderTime)
+
+
+
 
 class Order_Tab(tk.Frame):
     def __init__(self, parent, controller):
