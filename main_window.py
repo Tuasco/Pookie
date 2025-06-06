@@ -2,6 +2,7 @@ import tkinter as tk
 from time import time
 from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 from Models.Order import Order
+import pygame
 
 import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
@@ -136,6 +137,9 @@ class PookieGUI(tk.Tk):
 
 
 if __name__=="__main__":
+    pygame.mixer.init()
+    pygame.mixer.music.load("www/mm.mp3")
+    pygame.mixer.music.play(loops=-1)  # Loop indefinitely
     app = PookieGUI()
     app.mainloop()
     
