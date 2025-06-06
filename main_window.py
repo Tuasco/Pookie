@@ -82,21 +82,30 @@ class PookieGUI(tk.Tk):
         self.selected_order = order_id
         print(f"Selected: {order_id}")
 
-
     def create_order_panel(self, parent):
+        # This panel holds the title and the scrollable area.
         right_panel = tk.Frame(parent, width=200, bg="lightblue")
         right_panel.pack(side="right", fill="y")
+        # This crucial line prevents the panel from shrinking to fit its contents.
 
-        tk.Label(right_panel, text="Orders", font=("Helvetica", 14, "bold")).pack(pady=5)
+        right_panel.pack_propagate(False)
+
+        tk.Label(right_panel, text="Orders", font=("Helvetica", 14, "bold"), bg="lightblue").pack(pady=5)
         
-        self.selected_order = None  # to store the selected receipt
-        self.order_receipts = []    # to keep track of all receipt widgets
+        self.selected_order = None
+        self.order_receipts = []
 
+        # --- This frame will contain BOTH the canvas and the scrollbar ---
+        scroll_container = tk.Frame(right_panel, bg="lightblue")
+        scroll_container.pack(fill="both", expand=True, padx=5, pady=5)
+        
+        canvas = tk.Canvas(scroll_container, borderwidth=0, bg="lightblue", highlightthickness=0)
+        # The scrollbar is now correctly placed inside the scroll_container.
+        scrollbar = tk.Scrollbar(scroll_container, orient="vertical", command=canvas.yview)
+        # This is the frame that will hold all your order labels.
+        self.order_frame = tk.Frame(canvas, bg="lightblue")
 
-        canvas = tk.Canvas(right_panel, borderwidth=0, width=200)
-        scrollbar = tk.Scrollbar(right_panel, orient="vertical", command=canvas.yview) #canvas.yview tells the scrollbar to scroll the canvas vertically
-        self.order_frame = tk.Frame(canvas)
-
+        # This binding ensures the scrollable area resizes as you add more orders.
         self.order_frame.bind(
             "<Configure>",
             lambda e: canvas.configure(
@@ -104,17 +113,30 @@ class PookieGUI(tk.Tk):
             )
         )
 
-        canvas.create_window((0, 0), window=self.order_frame, anchor="nw")
+        # Place the order_frame inside the canvas.
+        frame_id = canvas.create_window((0, 0), window=self.order_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        # --- THE KEY FIX ---
+        # This function is called when the canvas is first drawn or resized.
+        def on_canvas_configure(event):
+            # It sets the width of the frame inside the canvas to match the canvas's width.
+            canvas.itemconfig(frame_id, width=event.width)
 
+        # We bind that function to the canvas's <Configure> event.
+        canvas.bind("<Configure>", on_canvas_configure)
+        # --- END OF FIX ---
+
+        # Pack the canvas and scrollbar side-by-side.
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+    
 
     def register_order(self, poke):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
-                        bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5)
+                        bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5, justify="left", padx=5)
         label.pack(pady=4, fill="x", padx=5)
 
         # Store reference to the label
