@@ -4,11 +4,20 @@ from time import sleep
 
 # Just for the demo — load from file in practice
 clients = [
+    #{"trait": "red hat", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "biker", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
+    #{"trait": "happy face and hat", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
+    #{"trait": "sad", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
+    #{"trait": "stylish", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
+    #{"trait": "sunglasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
     #{"trait": "glasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    #{"trait": "hat", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
-    #{"trait": "sunglasses and beard", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
-    #{"trait": "earrings", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
-    {"trait": "stylish", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
+    #{"trait": "nerd", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "artist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "worker", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "superhero", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "scientist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "royalty", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
+    #{"trait": "villain", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
     
 ]
 
@@ -63,29 +72,86 @@ class Order_Tab(tk.Frame):
   
  
         if trait == "glasses":
+            c.create_oval(85, 70, 90, 75, fill="black")   # Left eye
+            c.create_oval(110, 70, 115, 75, fill="black")  # Right eye
             c.create_oval(80, 65, 95, 80)
             c.create_oval(105, 65, 120, 80)
+            c.create_line(95, 72, 105, 72) 
+            c.create_oval(95, 85, 105, 95)
+        elif trait == "villain":
+            c.create_oval(85, 65, 95, 75, fill="black")
+            c.create_oval(105, 65, 115, 75, fill="black")
+            c.create_line(85, 60, 95, 65)  # angry eyebrow
+            c.create_line(105, 65, 115, 60)
+            c.create_arc(85, 85, 115, 105, start=0, extent=180, style=tk.ARC)
+        elif trait == "royalty":
+            c.create_oval(85, 65, 95, 75, fill="black")
+            c.create_oval(105, 65, 115, 75, fill="black")
+            c.create_arc(85, 80, 115, 100, start=0, extent=-180, style=tk.ARC)
+            c.create_polygon(85, 50, 90, 40, 100, 50, 110, 40, 115, 50, fill="gold", outline="black")
+        elif trait == "scientist":
+            c.create_rectangle(80, 65, 95, 80, fill="lightblue")
+            c.create_rectangle(105, 65, 120, 80, fill="lightblue")
             c.create_line(95, 72, 105, 72)
-        elif trait == "hat":
-            c.create_rectangle(65, 40, 135, 55, fill="black")
+            c.create_rectangle(125, 130, 130, 160, fill="green")  # test tube
+        elif trait == "superhero":
+            c.create_oval(85, 65, 95, 75, fill="black")
+            c.create_oval(105, 65, 115, 75, fill="black")
+            c.create_arc(85, 80, 115, 100, start=0, extent=-180, style=tk.ARC)
+            c.create_polygon(100, 110, 70, 200, 130, 200, fill="red", stipple="gray12")  # cape
+        elif trait == "worker":
+            c.create_rectangle(80, 65, 95, 80)
+            c.create_rectangle(105, 65, 120, 80)
+            c.create_line(95, 72, 105, 72)
+            c.create_rectangle(60, 160, 90, 180, fill="brown")  # book
+            c.create_line(90, 160, 90, 180)
+            c.create_line(95, 92, 105, 92, fill="black")
+            
+        elif trait == "artist":
+            c.create_oval(85, 65, 95, 75, fill="black")
+            c.create_oval(105, 65, 115, 75, fill="black")
+            c.create_line(85, 80, 115, 80)
+            c.create_oval(85, 50, 115, 60, fill="purple")  # beret
+        elif trait == "robot":
+            # Square head
+            c.create_rectangle(70, 50, 130, 110, fill="silver", outline="black")
+            # Eyes
+            c.create_rectangle(85, 65, 95, 75, fill="blue")
+            c.create_rectangle(105, 65, 115, 75, fill="blue")
+            # Antenna
+            c.create_line(100, 50, 100, 30)
+            c.create_oval(95, 25, 105, 35, fill="red")
+            # Mouth
+            c.create_rectangle(85, 90, 115, 95, fill="black")
+        elif trait == "nerd":
+            # Big glasses
+            c.create_rectangle(80, 65, 95, 80)
+            c.create_rectangle(105, 65, 120, 80)
+            c.create_line(95, 72, 105, 72)
+            c.create_oval(85, 67, 90, 72, fill="black")  # Left pupil
+            c.create_oval(110, 67, 115, 72, fill="black")  # Right pupil
+            # Teeth
+            c.create_rectangle(95, 95, 105, 100, fill="white", outline="black")
+            c.create_line(100, 95, 100, 100)
         elif trait == "happy face and hat":
             c.create_oval(85, 65, 95, 75, fill="black")   # Left eye
             c.create_oval(105, 65, 115, 75, fill="black")  # Right eye
             c.create_arc(85, 80, 115, 100, start=0, extent=-180, style=tk.ARC)
-            c.create_polygon(70, 50, 100, 10, 130, 50, fill="red", outline="black")
+            c.create_polygon(70, 50, 100, 30, 130, 50, fill="red", outline="black")
         elif trait == "sunglasses":
             c.create_oval(80, 65, 95, 80, fill="black")
             c.create_oval(105, 65, 120, 80, fill="black")
             c.create_line(95, 72, 105, 72, fill="black")
-        
-        elif trait == "earrings":
-            c.create_oval(60, 80, 70, 90, fill="gold")
-            c.create_oval(130, 80, 140, 90, fill="gold")
-        elif trait == "short hair":
-             c.create_arc(70, 40, 130, 80, start=0, extent=180, fill="brown", outline="black")  
+            c.create_line(95, 92, 105, 92, fill="black")
+        elif trait == "red hat":
+             c.create_arc(70, 40, 130, 80, start=0, extent=180, fill="brown", outline="black") # hat
+             c.create_arc(85, 65, 95, 75, start=0, extent=180, style=tk.ARC) # left eye
+             c.create_arc(105, 65, 115, 75, start=0, extent=180, style=tk.ARC) # right eye
+             c.create_arc(85, 80, 115, 100, start=0, extent=-180, style=tk.ARC)
+
         elif trait == "biker":
-            c.create_arc(75, 85, 125, 120, start=0, extent=180, fill="brown")
-            c.create_polygon(75, 100, 100, 130, 125, 100, fill="brown")
+            c.create_arc(75, 85, 125, 120, start=0, extent=180, fill="black")
+            c.create_polygon(75, 100, 100, 130, 125, 100, fill="black")
             c.create_rectangle(80, 65, 95, 80, fill="black")
             c.create_rectangle(105, 65, 120, 80, fill="black")
             c.create_line(95, 72, 105, 72)
@@ -103,6 +169,8 @@ class Order_Tab(tk.Frame):
             c.create_oval(97, 122, 103, 128, fill="black")
             c.create_oval(105, 65, 120, 80)  # monocle
             c.create_line(120, 70, 130, 70)  # string
+            c.create_oval(85, 70, 90, 75, fill="black")   # Left eye
+            c.create_oval(110, 70, 115, 75, fill="black")  # Right eye
 
 
     def take_order(self):
