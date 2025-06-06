@@ -1,13 +1,13 @@
 import tkinter as tk
-import threading
-from time import sleep
-from GUI.Tabs import difficulty_tab, order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from time import time
+from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from Models.Order import Order
+import pygame
 
 import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
-tab_classes=[difficulty_tab.Game_difficulty_Tab,
-             order_tab.Order_Tab, 
+tab_classes=[order_tab.Order_Tab, 
              base_tab.Base_Tab, 
              veg_fruit_tab.Veg_Fruit_Tab, 
              protein_tab.Protein_Tab, 
@@ -22,8 +22,10 @@ class PookieGUI(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Pookie")
-        self.geometry("800x600")
+        self.attributes("-fullscreen", True)
         self.timer = 0
+        self.selected_order = None
+        self.orders = []  # List to keep track of all orders
         
         # Top navigation bar
         nav_bar = tk.Frame(self, bg="lightgray")
@@ -80,21 +82,30 @@ class PookieGUI(tk.Tk):
         self.selected_order = order_id
         print(f"Selected: {order_id}")
 
-
     def create_order_panel(self, parent):
+        # This panel holds the title and the scrollable area.
         right_panel = tk.Frame(parent, width=200, bg="lightblue")
         right_panel.pack(side="right", fill="y")
+        # This crucial line prevents the panel from shrinking to fit its contents.
 
-        tk.Label(right_panel, text="Orders", font=("Helvetica", 14, "bold")).pack(pady=5)
+        right_panel.pack_propagate(False)
+
+        tk.Label(right_panel, text="Orders", font=("Helvetica", 14, "bold"), bg="lightblue").pack(pady=5)
         
-        self.selected_order = None  # to store the selected receipt
-        self.order_receipts = []    # to keep track of all receipt widgets
+        self.selected_order = None
+        self.order_receipts = []
 
+        # --- This frame will contain BOTH the canvas and the scrollbar ---
+        scroll_container = tk.Frame(right_panel, bg="lightblue")
+        scroll_container.pack(fill="both", expand=True, padx=5, pady=5)
+        
+        canvas = tk.Canvas(scroll_container, borderwidth=0, bg="lightblue", highlightthickness=0)
+        # The scrollbar is now correctly placed inside the scroll_container.
+        scrollbar = tk.Scrollbar(scroll_container, orient="vertical", command=canvas.yview)
+        # This is the frame that will hold all your order labels.
+        self.order_frame = tk.Frame(canvas, bg="lightblue")
 
-        canvas = tk.Canvas(right_panel, borderwidth=0, width=200)
-        scrollbar = tk.Scrollbar(right_panel, orient="vertical", command=canvas.yview) #canvas.yview tells the scrollbar to scroll the canvas vertically
-        self.order_frame = tk.Frame(canvas)
-
+        # This binding ensures the scrollable area resizes as you add more orders.
         self.order_frame.bind(
             "<Configure>",
             lambda e: canvas.configure(
@@ -102,21 +113,35 @@ class PookieGUI(tk.Tk):
             )
         )
 
-        canvas.create_window((0, 0), window=self.order_frame, anchor="nw")
+        # Place the order_frame inside the canvas.
+        frame_id = canvas.create_window((0, 0), window=self.order_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        canvas.pack(side="left", fill="both", expand=True)
+        # --- THE KEY FIX ---
+        # This function is called when the canvas is first drawn or resized.
+        def on_canvas_configure(event):
+            # It sets the width of the frame inside the canvas to match the canvas's width.
+            canvas.itemconfig(frame_id, width=event.width)
+
+        # We bind that function to the canvas's <Configure> event.
+        canvas.bind("<Configure>", on_canvas_configure)
+        # --- END OF FIX ---
+
+        # Pack the canvas and scrollbar side-by-side.
         scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
 
+    
 
-    def add_order_to_panel(self):
-        order_id = f"Order #{1000+len(self.order_receipts)}"
+    def register_order(self, poke):
+        order_id = f"Order #{1001+len(self.order_receipts)}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
-                        bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5)
+                        bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5, justify="left", padx=5)
         label.pack(pady=4, fill="x", padx=5)
 
         # Store reference to the label
         self.order_receipts.append((order_id, label))
+        self.orders.append(Order(order_id, poke, time()))
 
         # Add click binding
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
@@ -134,6 +159,9 @@ class PookieGUI(tk.Tk):
 
 
 if __name__=="__main__":
+    pygame.mixer.init()
+    pygame.mixer.music.load("www/mm.mp3")
+    pygame.mixer.music.play(loops=-1)  # Loop indefinitely
     app = PookieGUI()
     app.mainloop()
     
