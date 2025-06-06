@@ -1,5 +1,7 @@
 import tkinter as tk
+from time import time
 from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from Models.Order import Order
 
 import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
@@ -21,6 +23,8 @@ class PookieGUI(tk.Tk):
         self.title("Pookie")
         self.geometry("800x600")
         self.timer = 0
+        self.selected_order = None
+        self.orders = []  # List to keep track of all orders
         
         # Top navigation bar
         nav_bar = tk.Frame(self, bg="lightgray")
@@ -106,7 +110,7 @@ class PookieGUI(tk.Tk):
         scrollbar.pack(side="right", fill="y")
 
 
-    def add_order_to_panel(self):
+    def register_order(self, poke):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
                         bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5)
@@ -114,6 +118,7 @@ class PookieGUI(tk.Tk):
 
         # Store reference to the label
         self.order_receipts.append((order_id, label))
+        self.orders.append(Order(order_id, poke, time()))
 
         # Add click binding
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))

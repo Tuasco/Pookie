@@ -1,6 +1,6 @@
 import tkinter as tk
 import random
-from time import sleep
+from Models.Poke import Poke
 
 # Just for the demo — load from file in practice
 clients = [
@@ -122,7 +122,7 @@ class Order_Tab(tk.Frame):
         self.draw_stickman(trait=client["trait"])
 
         # Add order to orders list
-        self.controller.add_order_to_panel()
+        self.controller.register_order(Poke())
         self.after(3000, self.finish_taking_order)
 
 
