@@ -1,15 +1,15 @@
 Order_id,Base,VFT,Sauce,Protein,Cooking time,Trait
-1,bulgur,carrot;dragon fruit;avocado;tomato,salty soy,meat,6,red hat
+1,pasta,carrot;dragon fruit;avocado;tomato,salty soy,meat,6,red hat
 2,quinoa,edamame;mint;corn;carrot;lemon,sweet soy,salmon,7,biker
-3,salad,edamame;kiwi;melon,yuzu,meat,8,happy face and hat
+3,buckwheat,edamame;kiwi;melon,yuzu,meat,8,happy face and hat
 4,rice,watermelon;brocoli;lemon,sweet soy,shrimp,9,sad
-5,quinoa,avocado;mint;beet;egg;cucumber,spicy mayo,chicken,9,stylish
+5,pasta,avocado;mint;beet;egg;cucumber,spicy mayo,chicken,9,stylish
 6,quinoa,carrot;cucumber;corn;avocado,yuzu,tofu,7,sunglasses
 7,salad,mushroom;carrot;kiwi,spicy mayo,shrimp,10,glasses
-8,salad,mushroom;egg;peas;melon;dragon fruit,sweet soy,shrimp,3,nerd
+8,buckwheat,mushroom;egg;peas;melon;dragon fruit,sweet soy,shrimp,3,nerd
 9,rice,onion;edamame;beet;raspberry,yuzu,meat,10,artist
-10,quinoa,peas;grape;avocado;melon;edamame,sweet soy,meat,7,worker
+10,brown rice,peas;grape;avocado;melon;edamame,sweet soy,meat,7,worker
 11,quinoa,kiwi;grape;raspberry,salty soy,meat,10,superhero
 12,rice,raspberry;tomato;cucumber;beet;brocoli,spicy mayo,meat,8,scientist
-13,quinoa,onion;carrot;peas;brocoli;edamame,salty soy,meat,4,royalty
+13,brown rice,onion;carrot;peas;brocoli;edamame,salty soy,meat,4,royalty
 14,salad,dragon fruit;watermelon;beet;lemon;mint,salty soy,tofu,10,villain

@@ -12,13 +12,7 @@ import pygame
 import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
-tab_classes=[order_tab.Order_Tab,
-             base_tab.Base_Tab,
-             veg_fruit_tab.Veg_Fruit_Tab,
-             protein_tab.Protein_Tab,
-             extras_sauces_tab.Extras_Sauces_Tab,
-             serve_tab.Serve_Tab]
-
+tab_classes=[order_tab.Order_Tab, base_tab.Base_Tab, veg_fruit_tab.Veg_Fruit_Tab, protein_tab.Protein_Tab, extras_sauces_tab.Extras_Sauces_Tab, serve_tab.Serve_Tab]
 NavBarFont=("Helvetica", 18, "bold")
 
 class PookieGUI(tk.Tk):
@@ -40,38 +34,31 @@ class PookieGUI(tk.Tk):
         self.next_bowl_id = 1
         self.current_page = ""
         
-        # --- NEW: Get screen dimensions for responsive sizing ---
+        # Get screen dimensions for responsive sizing ---
         self.update_idletasks() # Ensure window info is up-to-date
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
 
-        # --- NEW: Define responsive sizes ---
-        # Let's make the right panel 15% of the screen width
+        # Define responsive sizes ---
         self.responsive_right_panel_width = int(screen_width * 0.15) 
-        # And the workspace canvas 20% of the screen height
         self.responsive_workspace_height = int(screen_height * 0.20)
 
-
-        # --- CORRECTED LAYOUT LOGIC ---
-
-        # 1. Create and fully configure the Top Navigation Bar FIRST
+        # UI Initialization ---
         nav_bar = tk.Frame(self, bg="lightgray")
 
-        # Add all tab buttons to the left of the nav_bar
         for page in tab_classes:
             cmd = partial(self.show_frame, page.__name__)
             b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=NavBarFont, command=cmd)
             b.pack(side="left", padx=10, pady=4)
 
-        # Add control buttons to the right of the nav_bar
         close_button = tk.Button(nav_bar, text="X", font=NavBarFont, command=self.destroy)
         close_button.pack(side="right", padx=10, pady=4)
 
         music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightgray", highlightthickness=0, cursor="hand2")
         music_canvas.pack(side="right", padx=10, pady=4)
         
+        # Create an icon loader and draw the icon
         try:
-            # Create an icon loader and draw the icon
             music_icon_loader = Icons(music_canvas, size=(24, 24))
             music_icon_loader.draw_icon("music_on", 12, 12)
         except Exception as e:
@@ -80,29 +67,25 @@ class PookieGUI(tk.Tk):
         
         music_canvas.bind("<Button-1>", lambda e: pygame.mixer.music.pause() if pygame.mixer.music.get_busy() else pygame.mixer.music.unpause())
 
-        # Now that nav_bar is fully configured, pack it into the window.
         nav_bar.pack(side="top", fill="x")
 
 
-        # 2. Create the Bowl Management Panel SECOND (but don't pack it yet)
+        # Bowl Management Panel ---
         self.bowl_management_panel = tk.Frame(self)
-        # Setup the content of the bowl panel
         bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="#e0e0e0") 
         bowl_selection_frame.pack(side="top", fill="x", padx=5, pady=(5,0))
         self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="#e0e0e0")
         self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
-        # --- MODIFIED: Use responsive height ---
         self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="lightyellow", highlightthickness=0)
         self.workspace_canvas.pack(side="bottom", fill="x", padx=5, pady=5)
         # This panel is packed/unpacked later in show_frame.
 
-
-        # 3. Create and pack the Main Content Frame LAST
+        # Main Container Frame ---
         main_frame = tk.Frame(self)
         main_frame.pack(side="top", fill="both", expand=True)
 
 
-        # --- Setup Main Content Area (which is inside main_frame) ---
+        # Setup Main Content Area (which is inside main_frame) ---
         self.container = tk.Frame(main_frame, bg="white")
         self.container.pack(side="left", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
@@ -129,23 +112,23 @@ class PookieGUI(tk.Tk):
         frame = self.pages[page_name]
         frame.tkraise()
 
-        # --- MODIFIED: Simplified logic to show/hide the bowl panel ---
         if page_name == "Order_Tab":
             self.bowl_management_panel.pack_forget()
-        # Only show the panel on other tabs if at least one bowl exists
         elif self.bowls:
              self.bowl_management_panel.pack(side="top", fill="x")
 
 
     def select_order(self, order_id, widget):
+        """ Selects an order by changing its background color and updating the selected_order attribute."""
+
         for _, lbl in self.order_receipts:
             lbl.config(bg="white")
+
         widget.config(bg="#e3f5eb")
         self.selected_order = order_id
         print(f"Selected: {order_id}")
 
     def create_order_panel(self, parent):
-        # --- MODIFIED: Use responsive width ---
         right_panel = tk.Frame(parent, width=self.responsive_right_panel_width, bg="lightblue")
         right_panel.pack(side="right", fill="y")
         right_panel.pack_propagate(False)
@@ -163,15 +146,21 @@ class PookieGUI(tk.Tk):
                 scrollregion=canvas.bbox("all")
             )
         )
+
         frame_id = canvas.create_window((0, 0), window=self.order_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
+
         def on_canvas_configure(event):
             canvas.itemconfig(frame_id, width=event.width)
+
         canvas.bind("<Configure>", on_canvas_configure)
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
 
+
     def register_order(self, poke):
+        """ Registers a new order by creating a label in the order panel and storing it in the orders list."""
+
         order_id = f"Order #{1001+len(self.order_receipts)}"
         poke_text= f"- {poke.base.capitalize()}\n* {str(poke.vft)[1:-2].replace('\'', '').replace(',', '\n*')}\n- {poke.sauce}\n- {poke.protein.name}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5, justify="left", padx=5)
@@ -197,10 +186,12 @@ class PookieGUI(tk.Tk):
 
     def set_active_bowl(self, bowl_id):
         """Sets the specified bowl as active and refreshes the UI."""
+
         self.active_bowl_id = bowl_id
         print(f"Active bowl set to: {bowl_id}")
         self.update_bowl_selection_bar()
         self.redraw_workspace()
+
 
     def update_bowl_selection_bar(self):
         """Clears and redraws the buttons for all created bowls."""
@@ -215,13 +206,15 @@ class PookieGUI(tk.Tk):
                 btn.config(relief="sunken", bg="#cceeff")
             btn.pack(side="left", padx=2, pady=2)
 
+
     def redraw_workspace(self):
         """Clears the workspace and draws the currently active bowl."""
+
         self.workspace_canvas.delete("all")
         if self.active_bowl_id is None or self.active_bowl_id not in self.bowls:
             return
         
-        # --- MODIFIED: Draw the bowl as a perfect circle ---
+        # Draw the circle
         self.update_idletasks()
         canvas_w = self.workspace_canvas.winfo_width()
         canvas_h = self.workspace_canvas.winfo_height()
@@ -230,7 +223,7 @@ class PookieGUI(tk.Tk):
         center_x = canvas_w / 2
         center_y = canvas_h / 2
         
-        # Make the diameter 85% of the canvas's smaller dimension to ensure it fits with padding
+        # Make the diameter 85% of the canvas's smaller dimension
         diameter = min(canvas_w, canvas_h) * 0.85
         radius = diameter / 2
         
@@ -249,8 +242,10 @@ class PookieGUI(tk.Tk):
             text_y = center_y + (radius * 0.5) # Position text in the lower part of the bowl
             self.workspace_canvas.create_text(text_x, text_y, text=f"Base: {active_poke.base.capitalize()}", font=("Helvetica", 14, "italic"))
 
+
     def add_base_to_active_bowl(self, base_name):
         """Called by Base_Tab to add a base to the current bowl."""
+
         if self.active_bowl_id is not None and self.active_bowl_id in self.bowls:
             self.bowls[self.active_bowl_id].base = base_name
             print(f"Added base '{base_name}' to Bowl {self.active_bowl_id}")
@@ -273,10 +268,7 @@ class PookieGUI(tk.Tk):
 
 if __name__=="__main__":
     pygame.mixer.init()
-    try:
-        pygame.mixer.music.load("www/mm.mp3")
-        pygame.mixer.music.play(loops=-1)
-    except pygame.error as e:
-        print(f"Could not load or play music: {e}")
+    pygame.mixer.music.load("www/mm.mp3")
+    pygame.mixer.music.play(loops=-1)
     app = PookieGUI()
     app.mainloop()
