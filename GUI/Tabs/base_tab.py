@@ -7,7 +7,7 @@ class Base_Tab(tk.Frame):
     """Class generating the base tab of the GUI. Allowing user to pick the base of the pokebowl."""
     
     def __init__(self, parent, controller):
-        super().__init__(parent)
+        super().__init__(parent, bg="seashell")
         self.controller = controller
         
         # --- Add the "+ New Bowl" button here ---
@@ -25,11 +25,11 @@ class Base_Tab(tk.Frame):
         separator.pack(fill=tk.X, padx=5, pady=5)
         
         # Title label
-        label = tk.Label(self, text="Select Base", font=("Helvetica", 16))
+        label = tk.Label(self, text="Select Base", font=("Helvetica", 16), bg="seashell")
         label.pack(pady=10)
         
         # Create a container frame to hold all the bowl widgets
-        bowls_container = tk.Frame(self)
+        bowls_container = tk.Frame(self, bg="seashell")
         bowls_container.pack(pady=10, padx=10)
         
         # Step 3: Loop through the base and create a widget for each one
@@ -43,14 +43,14 @@ class Base_Tab(tk.Frame):
 class BaseBowl(tk.Frame):
     """A widget representing a single Base Bowl with its canvas and icon."""
     def __init__(self, parent, base_name):
-        super().__init__(parent, highlightbackground="grey", highlightthickness=1, padx=5, pady=5)
+        super().__init__(parent, bg="seashell", padx=5, pady=5)
 
         # --- Label for the base ---
-        label = tk.Label(self, text=base_name.capitalize(), font=("Helvetica", 10))
+        label = tk.Label(self, text=base_name.capitalize(), font=("Helvetica", 12), bg="seashell", fg="saddlebrown")
         label.pack(pady=5)
 
         # --- Canvas Setup for this specific bowl ---
-        self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0)
+        self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0, bg="seashell")
         self.bowl_canvas.pack()
         
         # --- Icon Manager for this specific canvas ---
@@ -62,5 +62,5 @@ class BaseBowl(tk.Frame):
     def draw_bowl_and_icon(self, base):
         """Draw the bowl shape and the base icon on the canvas."""
 
-        self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="#8B4513", width=2)
+        self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="saddlebrown", width=2)
         self.icon_manager.draw_icon(base.lower(), 60, 60)

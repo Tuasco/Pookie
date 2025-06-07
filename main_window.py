@@ -24,10 +24,11 @@ class PookieGUI(tk.Tk):
         super().__init__()
         self.title("Pookie")
         self.attributes("-fullscreen", True)
+        self.configure(bg="lightpink")
         self.timer = 0
         self.selected_order = None
         self.orders = []
-
+        pygame.mixer.music.stop()
         # --- Music State ---
         self.music_on = True # [NEW] State variable for music
 
@@ -47,55 +48,55 @@ class PookieGUI(tk.Tk):
         self.responsive_workspace_height = int(screen_height * 0.20)
 
         # UI Initialization ---
-        nav_bar = tk.Frame(self, bg="lightgray")
+        nav_bar = tk.Frame(self, bg="lightpink")
 
         for page in tab_classes:
             cmd = partial(self.show_frame, page.__name__)
-            b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=NavBarFont, command=cmd)
+            b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=NavBarFont, command=cmd, bg="palevioletred", fg="white")
             b.pack(side="left", padx=10, pady=4)
 
-        close_button = tk.Button(nav_bar, text="X", font=NavBarFont, command=self.destroy)
+        close_button = tk.Button(nav_bar, text="X", font=NavBarFont, command=self.destroy, bg="mediumvioletred", fg="white", highlightthickness=0, cursor="hand2")
         close_button.pack(side="right", padx=10, pady=4)
 
         # --- Music Button Setup (Updated) ---
-        self.music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightgray", highlightthickness=0, cursor="hand2")
+        self.music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightpink", highlightthickness=0, cursor="hand2")
         self.music_canvas.pack(side="right", padx=10, pady=4)
         
         try:
             self.music_icon_loader = Icons(self.music_canvas, size=(24, 24))
-            self.music_icon_loader.draw_icon("sound_on", 12, 12) # [MODIFIED] Use "sound_on"
+            self.music_icon_loader.draw_icon("sound_on", 12, 12) 
         except Exception as e:
             print(f"Could not load music icon: {e}")
             self.music_canvas.create_text(12, 12, text="M", font=NavBarFont) # Fallback text
         
-        self.music_canvas.bind("<Button-1>", self.toggle_music) # [MODIFIED] Bind to the new toggle function
+        self.music_canvas.bind("<Button-1>", self.toggle_music) 
 
         nav_bar.pack(side="top", fill="x")
 
 
-
-        # Bowl Management Panel ---
-        self.bowl_management_panel = tk.Frame(self)
-        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="#e0e0e0") 
-        bowl_selection_frame.pack(side="top", fill="x", padx=5, pady=(5,0))
-        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="#e0e0e0")
-        self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
-        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="lightyellow", highlightthickness=0)
-        self.workspace_canvas.pack(side="bottom", fill="x", padx=5, pady=5)
-        # This panel is packed/unpacked later in show_frame.
-
         # Main Container Frame ---
         main_frame = tk.Frame(self)
         main_frame.pack(side="top", fill="both", expand=True)
+        self.create_order_panel(main_frame)
+        
+        # Bowl Management Panel ---
+        self.bowl_management_panel = tk.Frame(self)
+        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="thistle") 
+        bowl_selection_frame.pack(side="top", fill="x", padx=5, pady=(5,0))
+        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="plum")
+        self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
+        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="lavenderblush", highlightthickness=0)
+        self.workspace_canvas.pack(side="bottom", fill="x", padx=5, pady=5)
+        # This panel is packed/unpacked later in show_frame.
+
 
 
         # Setup Main Content Area (which is inside main_frame) ---
-        self.container = tk.Frame(main_frame, bg="white")
+        self.container = tk.Frame(main_frame, bg="seashell")
         self.container.pack(side="left", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
 
-        self.create_order_panel(main_frame)
 
         self.pages= {}
         for page in tab_classes:
@@ -141,7 +142,7 @@ class PookieGUI(tk.Tk):
         for _, lbl in self.order_receipts:
             lbl.config(bg="white")
 
-        widget.config(bg="#e3f5eb")
+        widget.config(bg="#e3f5eb", relief="groove")
         self.selected_order = order_id
         print(f"Selected: {order_id}")
 
@@ -180,7 +181,7 @@ class PookieGUI(tk.Tk):
 
         order_id = f"Order #{1001+len(self.order_receipts)}"
         poke_text= f"- {poke.base.capitalize()}\n* {str(poke.vft)[1:-2].replace('\'', '').replace(',', '\n*')}\n- {poke.sauce}\n- {poke.protein.name}"
-        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=("Courier", 15), bd=1, relief="solid", pady=5, justify="left", padx=5)
+        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=("Courier", 15), bd=1, borderwidth=0, pady=5, justify="left", padx=5)
         label.pack(pady=4, fill="x", padx=5)
         self.order_receipts.append((order_id, label))
         self.orders.append(Order(order_id, poke, time()))
@@ -251,7 +252,7 @@ class PookieGUI(tk.Tk):
         y2 = center_y + radius
         
         active_poke = self.bowls[self.active_bowl_id]
-        self.workspace_canvas.create_oval(x1, y1, x2, y2, fill="white", outline="grey", width=3)
+        self.workspace_canvas.create_oval(x1, y1, x2, y2, fill="floralwhite", outline="burlywood", width=3)
         
         # Draw the base text in the center of the circle
         if hasattr(active_poke, 'base') and active_poke.base:
@@ -259,16 +260,6 @@ class PookieGUI(tk.Tk):
             text_y = center_y + (radius * 0.5) # Position text in the lower part of the bowl
             self.workspace_canvas.create_text(text_x, text_y, text=f"Base: {active_poke.base.capitalize()}", font=("Helvetica", 14, "italic"))
 
-
-    def add_base_to_active_bowl(self, base_name):
-        """Called by Base_Tab to add a base to the current bowl."""
-
-        if self.active_bowl_id is not None and self.active_bowl_id in self.bowls:
-            self.bowls[self.active_bowl_id].base = base_name
-            print(f"Added base '{base_name}' to Bowl {self.active_bowl_id}")
-            self.redraw_workspace()
-        else:
-            print("No active bowl to add a base to!")
 
 
     def sec_loop(self):

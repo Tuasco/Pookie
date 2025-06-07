@@ -45,14 +45,14 @@ class ProteinBowl(tk.Frame):
     """A widget representing a single protein bowl with its canvas and icon."""
 
     def __init__(self, parent, protein_name):
-        super().__init__(parent, highlightbackground="grey", highlightthickness=1, padx=5, pady=5)
+        super().__init__(parent, bg=bg_color, padx=5, pady=5)
 
         # --- Label for the protein ---
-        label = tk.Label(self, text=protein_name.capitalize(), font=("Helvetica", 10))
+        label = tk.Label(self, text=protein_name.capitalize(), font=("Helvetica", 12), bg=bg_color, fg="saddlebrown")
         label.pack(pady=5)
 
         # --- Canvas Setup for this specific bowl ---
-        self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0, bd=0, relief="flat")
+        self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0, bg=bg_color)
         self.bowl_canvas.pack()
         
         self.icon_manager = Icons.Icons(self.bowl_canvas, size=(60, 60))
@@ -64,20 +64,20 @@ class ProteinBowl(tk.Frame):
         self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="#8B4513", width=2)
         self.icon_manager.draw_icon(protein.lower(), 60, 60)
 
-
+bg_color="seashell"  # Define a background color for the tab
 
 class Protein_Tab(tk.Frame):
     """Class where the user can select a protein option and cook it for the desired time."""
 
     def __init__(self, parent, controller):
-        super().__init__(parent)
+        super().__init__(parent, bg=bg_color)
         self.controller = controller
         # Create a label for the protein tab
-        label = tk.Label(self, text="Select Protein", font=("Helvetica", 16))
+        label = tk.Label(self, text="Select Protein", font=("Helvetica", 16), bg=bg_color)
         label.pack(pady=10)
         
         # Create a container frame to hold all the bowl widgets
-        bowls_container = tk.Frame(self)
+        bowls_container = tk.Frame(self, bg=bg_color)
         bowls_container.pack(pady=10, padx=10)
         
         # Create a widget for each protein
