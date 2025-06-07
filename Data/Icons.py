@@ -66,7 +66,8 @@ if __name__ == "main":
         ("shrimp",150,300),
         ("tofu",200,300),
         ("tomato",250,300),
-        ("watermelon",300,300)
+        ("watermelon",300,300),
+        ("music", 400, 300)
     ]
 
     for name, x, y in positions:

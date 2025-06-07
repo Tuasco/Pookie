@@ -56,6 +56,12 @@ class PookieGUI(tk.Tk):
             b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=NavBarFont, command=lambda n=page.__name__: self.show_frame(n))
             b.pack(side="left", padx=10, pady=4)
 
+        close_button = tk.Button(nav_bar, text="X", font=NavBarFont, command=self.destroy)
+        close_button.pack(side="right", padx=10, pady=4)
+
+        toggle_music_button = tk.Button(nav_bar, text="Toggle music", font=NavBarFont, command=lambda: pygame.mixer.music.pause() if pygame.mixer.music.get_busy() else pygame.mixer.music.unpause())
+        toggle_music_button.pack(side="right", padx=20, pady=4)
+
         # Main layout: left = changing frame; right = order list
         main_frame = tk.Frame(self)
         main_frame.pack(fill="both", expand=True)

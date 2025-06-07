@@ -28,7 +28,6 @@ orders = file_reader('Customer_simulation/orders.csv') #list of Orders instances
 
 
 
-
 class Order_Tab(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -49,7 +48,7 @@ class Order_Tab(tk.Frame):
                                bg="#f0f0f0", relief="solid", bd=1, justify="left", padx=10, pady=10)
         self.speech.grid(row=0, column=1, padx=20, pady=20, sticky="n")
 
-        self.take_order_button = tk.Button(self, text="Take Order", command=self.take_order)
+        self.take_order_button = tk.Button(self, text="Take Order", font=("Helvetica", 12),command=self.take_order)
         self.take_order_button.grid(row=1, column=0, columnspan=2, pady=10)
 
 
