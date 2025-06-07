@@ -17,6 +17,7 @@ class Base_Tab(tk.Frame):
             font=("Helvetica", 12, "bold"),
             command=self.controller.add_new_bowl  # This calls the method in main_window.py
         )
+        
         new_bowl_button.pack(side="left" ,pady=20, padx=10)
 
         # --- Separator for clarity ---

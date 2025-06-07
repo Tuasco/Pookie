@@ -200,7 +200,7 @@ class Order_Tab(tk.Frame):
 
         # Add order to orders list
         self.controller.register_order(order["poke"])
-        self.after(10000, self.finish_taking_order)
+        self.after(5000, self.finish_taking_order)
 
 
     def finish_taking_order(self):
