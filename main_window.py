@@ -18,6 +18,8 @@ tab_classes=[order_tab.Order_Tab,
              extras_sauces_tab.Extras_Sauces_Tab, 
              serve_tab.Serve_Tab]
 
+NavBarFont=("Helvetica", 18, "bold")
+
 class PookieGUI(tk.Tk):
     """
     Principal class for the Pookie game GUI.
@@ -51,8 +53,8 @@ class PookieGUI(tk.Tk):
         nav_bar.pack(side="top", fill="x")
 
         for page in tab_classes:
-            b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], command=lambda n=page.__name__: self.show_frame(n))
-            b.pack(side="left", padx=2, pady=4)
+            b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=NavBarFont, command=lambda n=page.__name__: self.show_frame(n))
+            b.pack(side="left", padx=10, pady=4)
 
         # Main layout: left = changing frame; right = order list
         main_frame = tk.Frame(self)
