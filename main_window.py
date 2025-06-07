@@ -28,6 +28,9 @@ class PookieGUI(tk.Tk):
         self.selected_order = None
         self.orders = []
 
+        # --- Music State ---
+        self.music_on = True # [NEW] State variable for music
+
         # --- Bowl Management Data Initialization ---
         self.bowls = {}
         self.active_bowl_id = None
@@ -54,20 +57,21 @@ class PookieGUI(tk.Tk):
         close_button = tk.Button(nav_bar, text="X", font=NavBarFont, command=self.destroy)
         close_button.pack(side="right", padx=10, pady=4)
 
-        music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightgray", highlightthickness=0, cursor="hand2")
-        music_canvas.pack(side="right", padx=10, pady=4)
+        # --- Music Button Setup (Updated) ---
+        self.music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightgray", highlightthickness=0, cursor="hand2")
+        self.music_canvas.pack(side="right", padx=10, pady=4)
         
-        # Create an icon loader and draw the icon
         try:
-            music_icon_loader = Icons(music_canvas, size=(24, 24))
-            music_icon_loader.draw_icon("music_on", 12, 12)
+            self.music_icon_loader = Icons(self.music_canvas, size=(24, 24))
+            self.music_icon_loader.draw_icon("sound_on", 12, 12) # [MODIFIED] Use "sound_on"
         except Exception as e:
-            print(f"Could not load music_on icon: {e}")
-            music_canvas.create_text(12, 12, text="M", font=NavBarFont) # Fallback text
+            print(f"Could not load music icon: {e}")
+            self.music_canvas.create_text(12, 12, text="M", font=NavBarFont) # Fallback text
         
-        music_canvas.bind("<Button-1>", lambda e: pygame.mixer.music.pause() if pygame.mixer.music.get_busy() else pygame.mixer.music.unpause())
+        self.music_canvas.bind("<Button-1>", self.toggle_music) # [MODIFIED] Bind to the new toggle function
 
         nav_bar.pack(side="top", fill="x")
+
 
 
         # Bowl Management Panel ---
@@ -102,6 +106,19 @@ class PookieGUI(tk.Tk):
 
         self.show_frame("Order_Tab")
         self.sec_loop()
+    
+    # --- Music Toggle Function ---
+    def toggle_music(self, event=None):
+        """Toggles the music on and off and updates the icon."""
+        self.music_canvas.delete("all") # Clear the old icon
+        if self.music_on:
+            pygame.mixer.music.stop()
+            self.music_icon_loader.draw_icon("sound_off", 12, 12)
+            self.music_on = False
+        else:
+            pygame.mixer.music.play(loops=-1)
+            self.music_icon_loader.draw_icon("sound_on", 12, 12)
+            self.music_on = True
 
 
     def show_frame(self, page_name):
