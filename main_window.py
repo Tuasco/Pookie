@@ -160,7 +160,8 @@ class PookieGUI(tk.Tk):
 
     def register_order(self, poke):
         order_id = f"Order #{1001+len(self.order_receipts)}"
-        label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
+        poke_text= f"- {poke.base.capitalize()}\n* {str(poke.vft)[1:-2].replace('\'', '').replace(',', '\n*')}\n- {poke.sauce}\n- {poke.protein.name}"
+        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}",
                         bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5, justify="left", padx=5)
         label.pack(pady=4, fill="x", padx=5)
 

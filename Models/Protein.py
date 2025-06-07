@@ -5,7 +5,7 @@ class Protein:
 
 
     def __str__(self) -> str:
-        return f"Protein: {self.name}, Cook Time: {self.cookTime}"
+        return f"Protein: {self.name} \nCooking time: {f"{self.cookTime} min" if self.cookTime != -1 else 'No cooking'}"
     
 
     def terminateCooking(self, cookTime: int) -> 'Protein':

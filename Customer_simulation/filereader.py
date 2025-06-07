@@ -1,7 +1,7 @@
 from Models.Order import Order
 from Models.Poke import Poke
+from Models.Protein import Protein
 import csv
-
 
 
 def file_reader(filename) : 
@@ -31,12 +31,9 @@ def file_reader(filename) :
     return orders
 
 
-
-
 def file_reader_clients(filename) :  #creates the clients list to use in order_tab
     with open(filename, newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
-    
 
     clients =[] #list of clients with their order and their traits as dictionaries
 
@@ -57,24 +54,20 @@ def file_reader_clients(filename) :  #creates the clients list to use in order_t
 
 ''' TO DO : another file_reader that returns a list of dictionaries {"traits", Poke --- instance of the class Poke}'''
 def file_reader_dico(filename) : 
-    with open(filename, newline="") as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
-    
-    
     orders=[] #lists of dico with a trait and a Poke instance
 
-    for ligne in reader:
-        order_id, base, vft, sauce, protein, cookTime, trait = ligne
-        vft_list = vft.split(';')
+    with open(filename, newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")    
+        next(reader, None)
 
-        dico_order = {}
-    
-        dico_order["trait"] = trait
-        order_poke = Poke(base,vft_list,sauce,protein)
-        dico_order["Poke"] = order_poke
+        for ligne in reader:
+            order_id, base, vft, sauce, protein, cookTime, trait = ligne
+            vft_list = vft.split(';')
 
-        orders.append(dico_order)
+            dico_order = {}
+            dico_order["trait"] = trait
+            dico_order["poke"] = Poke(base, vft_list, sauce, Protein(protein, cookTime))
 
+            orders.append(dico_order)
 
-
-
+    return orders

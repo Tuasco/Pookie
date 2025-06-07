@@ -10,7 +10,10 @@ class Poke:
 
 
     def __str__(self) -> str:
-        return f"Base: {self.base}, VFT: {self.vft}, Sauce: {self.sauce}, Protein: {self.protein}, Cook Time: {self.cookTime}"
+        beautified_vft = ""
+        for ingredient in self.vft:
+            beautified_vft += f"{ingredient}, "
+        return f"Base: {self.base} \nVFT: {beautified_vft[:-2]} \nSauce: {self.sauce} \nProtein: {self.protein}"
     
 
     def add_base(self, base: str) -> 'Poke':

@@ -1,7 +1,7 @@
 import tkinter as tk
 import random
 from Models.Poke import Poke
-from Customer_simulation.filereader import file_reader
+from Customer_simulation.filereader import file_reader_dico
 
 # Just for the demo — load from file in practice
 clients = [
@@ -19,21 +19,16 @@ clients = [
     {"trait": "scientist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
     {"trait": "royalty", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
     {"trait": "villain", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    
 ]
 
-
-
-orders = file_reader('Customer_simulation/orders.csv') #list of Orders instances Order(order_id, orderedPoke, preparedPoke, orderTime)
-
-
+orders = file_reader_dico("Customer_simulation/orders.csv")
 
 class Order_Tab(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
 
-        self.pending_clients = []
+        self.pending_orders = []
         self.taking_order = False
 
         self.columnconfigure(0, weight=1)
@@ -56,13 +51,13 @@ class Order_Tab(tk.Frame):
         if timer % 60 != 0:
             return
 
-        client = random.choice(clients)
-        self.pending_clients.append(client)
+        order = random.choice(orders)
+        self.pending_orders.append(order)
 
-        if len(self.pending_clients) == 1:
-            self.draw_stickman(trait=client["trait"])
+        if len(self.pending_orders) == 1:
+            self.draw_stickman(trait=order["trait"])
 
-        self.speech.config(text=f"Line : {len(self.pending_clients)}")
+        self.speech.config(text=f"Line : {len(self.pending_orders)}")
         print("Order added")
 
 
@@ -194,17 +189,18 @@ class Order_Tab(tk.Frame):
         if self.taking_order:
             return
 
-        client = self.pending_clients.pop(0) if self.pending_clients else None
-        if client is None:
+        order = self.pending_orders.pop(0) if self.pending_orders else None
+        if order is None:
             return
         
         self.taking_order = True
-        self.speech.config(text=client["order"])
-        self.draw_stickman(trait=client["trait"])
+        self.speech.config(text=order["poke"])
+        self.draw_stickman(trait=order["trait"])
+        print(order["trait"])
 
         # Add order to orders list
-        self.controller.register_order(Poke())
-        self.after(3000, self.finish_taking_order)
+        self.controller.register_order(order["poke"])
+        self.after(10000, self.finish_taking_order)
 
 
     def finish_taking_order(self):
@@ -212,15 +208,14 @@ class Order_Tab(tk.Frame):
         This function is called after the order is taken.
         It can be used to update the GUI or perform background tasks.
         """
-        if self.pending_clients:
-            self.draw_stickman(trait=self.pending_clients[0]["trait"])
-            self.speech.config(text=f"Line : {len(self.pending_clients)}")
+        if self.pending_orders:
+            self.draw_stickman(trait=self.pending_orders[0]["trait"])
+            self.speech.config(text=f"Line : {len(self.pending_orders)}")
         else:
             self.stickman_canvas.delete("all")
             self.speech.config(text="No more clients in line.")
 
-        self.taking_order = False
-         
+        self.taking_order = False         
 
 
 if __name__=="__main__":
