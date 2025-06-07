@@ -90,9 +90,9 @@ class Protein_Tab(tk.Frame):
         # Step 3: Loop through the proteins and create a widget for each one
         for protein in protein_names:
             # Create an instance of our new ProteinBowl class
-            #bowl_widget = ProteinBowl(bowls_container, protein_name=protein)
+            bowl_widget = ProteinBowl(bowls_container, protein_name=protein)
             # Pack it to the left, allowing them to arrange horizontally
-            #bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
+            bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
             continue
         
     

@@ -1,7 +1,11 @@
 import tkinter as tk
 from time import time
-from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
+from functools import partial
+
+from Models.Poke import Poke
 from Models.Order import Order
+
+from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 import pygame
 
 import sys, os, inspect
@@ -27,6 +31,21 @@ class PookieGUI(tk.Tk):
         self.selected_order = None
         self.orders = []  # List to keep track of all orders
         
+        
+        # --- NEW: Main Panel for Bowl Management ---
+        self.bowl_management_panel = tk.Frame(self)
+
+        # Part 1: The selection bar
+        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="#e0e0e0")
+        bowl_selection_frame.pack(side="top", fill="x", padx=5, pady=(5,0))
+        
+        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="#e0e0e0")
+        self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
+
+        # Part 2: The workspace where the active bowl is drawn
+        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=150, bg="lightyellow", highlightthickness=0)
+        self.workspace_canvas.pack(side="bottom", fill="x", padx=5, pady=5)
+                
         # Top navigation bar
         nav_bar = tk.Frame(self, bg="lightgray")
         nav_bar.pack(side="top", fill="x")
@@ -76,7 +95,7 @@ class PookieGUI(tk.Tk):
             lbl.config(bg="white")
 
         # Highlight selected
-        widget.config(bg="#cceeff")  # light blue
+        widget.config(bg="#e3f5eb")  
 
         # Save selected
         self.selected_order = order_id
@@ -131,8 +150,6 @@ class PookieGUI(tk.Tk):
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
 
-    
-
     def register_order(self, poke):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n- base\n- topping\n- protein",
@@ -145,6 +162,56 @@ class PookieGUI(tk.Tk):
 
         # Add click binding
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
+    
+    def add_new_bowl(self):
+            """Creates a new bowl, adds it to the list, and makes it active."""
+            new_id = self.next_bowl_id
+            self.bowls[new_id] = Poke() # Create a new empty Poke object
+            self.next_bowl_id += 1
+            self.set_active_bowl(new_id)
+            
+            # Ensure the panel is visible if we're not on the order tab
+            self.show_frame(self.current_page)
+    
+    def set_active_bowl(self, bowl_id):
+        """Sets the specified bowl as active and refreshes the UI."""
+        self.active_bowl_id = bowl_id
+        print(f"Active bowl set to: {bowl_id}")
+        self.update_bowl_selection_bar()
+        self.redraw_workspace()
+    
+    def update_bowl_selection_bar(self):
+        """Clears and redraws the buttons for all created bowls."""
+        for widget in self.bowl_buttons_frame.winfo_children():
+            widget.destroy()
+
+        for bowl_id, poke in sorted(self.bowls.items()):
+            cmd = partial(self.set_active_bowl, bowl_id)
+            btn_text = f"Bowl {bowl_id}"
+            btn = tk.Button(self.bowl_buttons_frame, text=btn_text, command=cmd, relief="raised")
+            
+            if bowl_id == self.active_bowl_id:
+                btn.config(relief="sunken", bg="#cceeff") # Highlight active bowl
+            
+            btn.pack(side="left", padx=2, pady=2)
+    
+    def redraw_workspace(self):
+        """Clears the workspace and draws the currently active bowl."""
+        self.workspace_canvas.delete("all")
+        if self.active_bowl_id is None or self.active_bowl_id not in self.bowls:
+            return
+
+        # Get the data for the active bowl
+        active_poke = self.bowls[self.active_bowl_id]
+        
+        # Draw the bowl shape
+        self.workspace_canvas.create_oval(150, 20, 450, 140, fill="white", outline="grey", width=2)
+        
+        # Draw the ingredients as text
+        y_pos = 40
+        if active_poke.base:
+            self.workspace_canvas.create_text(300, 110, text=f"Base: {active_poke.base.capitalize()}", font=("Helvetica", 12, "italic"))
+        # Future logic will draw proteins, veggies etc. here
 
     def sec_loop(self):
         """

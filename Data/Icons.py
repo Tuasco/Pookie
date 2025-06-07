@@ -44,7 +44,7 @@ if __name__ == "main":
     positions = [
         ("avocado", 100, 100),
         ("beet",150,100),
-        ("broc",200,100),
+        ("broccoli",200,100),
         ("carrot",250,100),
         ("chicken",300,100),
         ("corn",350,100),
