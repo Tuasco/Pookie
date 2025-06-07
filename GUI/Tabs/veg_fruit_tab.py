@@ -2,7 +2,7 @@ import tkinter as tk
 from Data.Icons import Icons
 
 veggies= ["carrot", "broccoli", "beet", "tomato", "cucumber", "mushroom", "onion", "peas"]
-fruits = ["dragon fruit", "melon", "watermelon", "grape", "kiwi", "avocado", "raspberry"]
+fruits = ["dragon fruit", "melon", "watermelon", "grapes", "kiwi", "avocado", "raspberry"]
 
 class Veg_Fruit_Tab(tk.Frame):
     """Class representing the vegetable and fruit selection tab in the Pookie GUI.

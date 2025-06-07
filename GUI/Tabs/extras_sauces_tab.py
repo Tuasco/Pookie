@@ -53,7 +53,6 @@ class ExtrasSaucesBowl(tk.Frame):
         self.bowl_canvas.pack()
 
         self.icon_manager = Icons(self.bowl_canvas, size=(60, 60))
-        self.draw_bowl_and_icon(extra_name)
 
         
         if extra_name in sauce_names:

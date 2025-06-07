@@ -52,7 +52,7 @@ class ProteinBowl(tk.Frame):
         label.pack(pady=5)
 
         # --- Canvas Setup for this specific bowl ---
-        self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0)
+        self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0, bd=0, relief="flat")
         self.bowl_canvas.pack()
         
         self.icon_manager = Icons.Icons(self.bowl_canvas, size=(60, 60))

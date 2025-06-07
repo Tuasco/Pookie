@@ -133,7 +133,7 @@ class PookieGUI(tk.Tk):
         right_panel.pack(side="right", fill="y")
         right_panel.pack_propagate(False)
 
-        tk.Label(right_panel, text="Orders", font=("Helvetica", 14, "bold"), bg="lightblue").pack(pady=5)
+        tk.Label(right_panel, text="Orders", font=("Helvetica", 20, "bold"), bg="lightblue").pack(pady=5)
         self.order_receipts = []
         scroll_container = tk.Frame(right_panel, bg="lightblue")
         scroll_container.pack(fill="both", expand=True, padx=5, pady=5)
@@ -163,7 +163,7 @@ class PookieGUI(tk.Tk):
 
         order_id = f"Order #{1001+len(self.order_receipts)}"
         poke_text= f"- {poke.base.capitalize()}\n* {str(poke.vft)[1:-2].replace('\'', '').replace(',', '\n*')}\n- {poke.sauce}\n- {poke.protein.name}"
-        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=("Courier", 10), bd=1, relief="solid", pady=5, justify="left", padx=5)
+        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=("Courier", 15), bd=1, relief="solid", pady=5, justify="left", padx=5)
         label.pack(pady=4, fill="x", padx=5)
         self.order_receipts.append((order_id, label))
         self.orders.append(Order(order_id, poke, time()))
