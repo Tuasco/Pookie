@@ -62,52 +62,50 @@ class PookieGUI(tk.Tk):
         self.music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightpink", highlightthickness=0, cursor="hand2")
         self.music_canvas.pack(side="right", padx=10, pady=4)
         
-        try:
-            self.music_icon_loader = Icons(self.music_canvas, size=(24, 24))
-            self.music_icon_loader.draw_icon("sound_on", 12, 12) 
-        except Exception as e:
-            print(f"Could not load music icon: {e}")
-            self.music_canvas.create_text(12, 12, text="M", font=NavBarFont) # Fallback text
+        self.music_icon_loader = Icons(self.music_canvas, size=(24, 24))
+        self.music_icon_loader.draw_icon("sound_on", 12, 12) 
         
         self.music_canvas.bind("<Button-1>", self.toggle_music) 
 
         nav_bar.pack(side="top", fill="x")
+        #---------
 
-
-        # Main Container Frame ---
+        # --- Main Frame for Content ---
+        # This frame will hold the order panel, the tabs container, and the bowl panel
         main_frame = tk.Frame(self)
         main_frame.pack(side="top", fill="both", expand=True)
+
+        # Create the Order Panel first and pack it to the right
         self.create_order_panel(main_frame)
-        
-        # Bowl Management Panel ---
-        self.bowl_management_panel = tk.Frame(self)
-        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="thistle") 
+
+        # Create the Bowl Management Panel 
+        # Its parent is now main_frame. It is not packed here, but later.
+        self.bowl_management_panel = tk.Frame(main_frame)
+        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="#e0e0e0") 
         bowl_selection_frame.pack(side="top", fill="x", padx=5, pady=(5,0))
-        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="plum")
+        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="seashell", highlightthickness=0)
         self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
-        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="lavenderblush", highlightthickness=0)
+        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="seashell", highlightthickness=0)
         self.workspace_canvas.pack(side="bottom", fill="x", padx=5, pady=5)
-        # This panel is packed/unpacked later in show_frame.
 
-
-
-        # Setup Main Content Area (which is inside main_frame) ---
+        # Create the main container for tabs last.
+        # It will fill the remaining space at the top and to the left.
         self.container = tk.Frame(main_frame, bg="seashell")
-        self.container.pack(side="left", fill="both", expand=True)
+        self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
 
-
+        # --- Page and Tab Initialization ---
         self.pages= {}
         for page in tab_classes:
             page_name = page.__name__
+            # The parent for the tabs is still the container
             frame = page(parent=self.container, controller=self)
             self.pages[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("Order_Tab")
         self.sec_loop()
-    
     # --- Music Toggle Function ---
     def toggle_music(self, event=None):
         """Toggles the music on and off and updates the icon."""
@@ -133,7 +131,7 @@ class PookieGUI(tk.Tk):
         if page_name == "Order_Tab":
             self.bowl_management_panel.pack_forget()
         elif self.bowls:
-             self.bowl_management_panel.pack(side="top", fill="x")
+             self.bowl_management_panel.pack(side="bottom")
 
 
     def select_order(self, order_id, widget):
@@ -193,7 +191,7 @@ class PookieGUI(tk.Tk):
         was_first_bowl = not self.bowls
         
         if was_first_bowl and self.current_page != "Order_Tab":
-            self.bowl_management_panel.pack(side="top", fill="x")
+            self.bowl_management_panel.pack(side="bottom", fill="x")
         
         new_id = self.next_bowl_id
         self.bowls[new_id] = Poke()
