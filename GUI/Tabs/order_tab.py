@@ -3,24 +3,6 @@ import random
 from Models.Poke import Poke
 from Customer_simulation.filereader import file_reader_dico
 
-# Just for the demo — load from file in practice
-clients = [
-    {"trait": "red hat", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "biker", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
-    {"trait": "happy face and hat", "order": "Base: Quinoa, Protein: Tofu, Sauce: Spicy Mayo"},
-    {"trait": "sad", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
-    {"trait": "stylish", "order": "Base: Rice, Protein: Chicken, Sauce: Teriyaki"},
-    {"trait": "sunglasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "glasses", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "nerd", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "artist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "worker", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "superhero", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "scientist", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "royalty", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-    {"trait": "villain", "order": "Base: Rice, Protein: Salmon, Sauce: Soy"},
-]
-
 orders = file_reader_dico("Customer_simulation/orders.csv")
 
 class Order_Tab(tk.Frame):
@@ -183,9 +165,11 @@ class Order_Tab(tk.Frame):
 
     def take_order(self):
         """
-        Simulate taking an order.
-        In practice, this would involve more complex logic.
+        Take the next order from the pending orders list.
+        Update the GUI to show the order being taken and the stickman representation.
+        Call 'register_order' on the controller to register the order.
         """
+
         if self.taking_order:
             return
 
@@ -206,8 +190,9 @@ class Order_Tab(tk.Frame):
     def finish_taking_order(self):
         """
         This function is called after the order is taken.
-        It can be used to update the GUI or perform background tasks.
+        It is used to update the GUI.
         """
+
         if self.pending_orders:
             self.draw_stickman(trait=self.pending_orders[0]["trait"])
             self.speech.config(text=f"Line : {len(self.pending_orders)}")

@@ -60,9 +60,7 @@ class BaseBowl(tk.Frame):
         self.draw_bowl_and_icon(base_name)
 
     def draw_bowl_and_icon(self, base):
-        """Draws the bowl shape and the base icon on the canvas."""
-        # Draw the bowl shape in the center of the 120x120 canvas
+        """Draw the bowl shape and the base icon on the canvas."""
+
         self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="#8B4513", width=2)
-        
-        # Draw the icon in the center (60, 60)
         self.icon_manager.draw_icon(base.lower(), 60, 60)

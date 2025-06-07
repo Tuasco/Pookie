@@ -1,11 +1,10 @@
 import tkinter as tk
 
 class Serve_Tab(tk.Frame):
-    """
-    Class representing the serve tab in the Pookie GUI.
+    """Class representing the serve tab in the Pookie GUI.
     Takes the selected reciept and serves the dish to the affiliated client.
-    Inherits from tkinter.Frame to create a frame for the serve tab.
-    """
+    Inherits from tkinter.Frame to create a frame for the serve tab."""
+
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller

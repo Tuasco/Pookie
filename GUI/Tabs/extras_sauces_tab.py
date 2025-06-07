@@ -27,12 +27,11 @@ class Extras_Sauces_Tab(tk.Frame):
         sauces_container = tk.Frame(self)
         sauces_container.pack(pady=10, padx=10)
         
-        # Step 3: Loop through the extras and sauces and create a widget for each one
+        # Create a widget for each extra and sauce
         for extra in extra_names:
-            # Create an instance of our new ExtrasSaucesBowl class
             bowl_widget = ExtrasSaucesBowl(extras_container, extra_name=extra)
-            # Pack it to the left, allowing them to arrange horizontally
             bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
+            
         for sauce in sauce_names:
             bowl_widget = ExtrasSaucesBowl(sauces_container, extra_name=sauce)
             bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
@@ -52,17 +51,12 @@ class ExtrasSaucesBowl(tk.Frame):
         # --- Canvas Setup for this specific bowl ---
         self.bowl_canvas = tk.Canvas(self, width=120, height=120, highlightthickness=0)
         self.bowl_canvas.pack()
-        
-        # --- Icon Manager for this specific canvas ---
+
         self.icon_manager = Icons(self.bowl_canvas, size=(60, 60))
-        
-        # --- Draw the bowl and icon ---
         self.draw_bowl_and_icon(extra_name)
 
     def draw_bowl_and_icon(self, extra):
         """Draws the bowl shape and the extra/sauce icon on the canvas."""
-        # Draw the bowl shape in the center of the 120x120 canvas
+
         self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="#8B4513", width=2)
-        
-        # Draw the icon in the center (60, 60)
         self.icon_manager.draw_icon(extra.lower(), 60, 60)
