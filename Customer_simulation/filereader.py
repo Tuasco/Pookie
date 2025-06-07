@@ -5,29 +5,28 @@ import csv
 
 
 def file_reader(filename) : 
-    with open(filename, newline="") as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
-    
-    
     orders=[] #list of Order objects
+    
+    with open(filename, newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")    
 
-    for ligne in reader:
-        order_id, base, vft, sauce, protein, cookTime, trait = ligne
-        vft_list = vft.split(';')
+        for ligne in reader:
+            order_id, base, vft, sauce, protein, cookTime, trait = ligne
+            vft_list = vft.split(';')
 
-        dico_vft = {}
-        for ingredient in vft_list :
-            if ingredient in dico_vft.keys():
-                dico_vft[ingredient].append((0,0))
-            else :
-                dico_vft[ingredient]=(0,0)
+            dico_vft = {}
+            for ingredient in vft_list :
+                if ingredient in dico_vft.keys():
+                    dico_vft[ingredient].append((0,0))
+                else :
+                    dico_vft[ingredient]=(0,0)
 
-        orderedPoke = Poke(base,dico_vft,sauce,protein)
+            orderedPoke = Poke(base,dico_vft,sauce,protein)
 
 
-        order = Order(order_id, orderedPoke, None, None) #preparedPoke initialized as None at the beginning #orderTime initialized as None too until order is assigned
+            order = Order(order_id, orderedPoke, None) #preparedPoke initialized as None at the beginning #orderTime initialized as None too until order is assigned
 
-        orders.append(order)
+            orders.append(order)
 
     return orders
 

@@ -1,7 +1,7 @@
 import tkinter as tk
 import random
 from Models.Poke import Poke
-from Customer_relation.filereader import file_reader
+from Customer_simulation.filereader import file_reader
 
 # Just for the demo — load from file in practice
 clients = [
@@ -24,7 +24,7 @@ clients = [
 
 
 
-orders = file_reader('orders.csv') #list of Orders instances Order(order_id, orderedPoke, preparedPoke, orderTime)
+orders = file_reader('Customer_simulation/orders.csv') #list of Orders instances Order(order_id, orderedPoke, preparedPoke, orderTime)
 
 
 
