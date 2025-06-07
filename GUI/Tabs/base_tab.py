@@ -1,7 +1,7 @@
 import tkinter as tk
 from Data.Icons import Icons
 
-base_names = ["salad"] #, "rice", "quinoa", "pasta"]
+base_names = ["salad", "rice", "brown rice", "quinoa", "pasta", "buckwheat"]
 
 class Base_Tab(tk.Frame):
     """Class generating the base tab of the GUI. Allowing user to pick the base of the pokebowl."""
@@ -57,7 +57,7 @@ class BaseBowl(tk.Frame):
         self.icon_manager = Icons(self.bowl_canvas, size=(60, 60))
         
         # --- Draw the bowl and icon ---
-        self.draw_bowl_and_icon(base_name)
+        self.draw_bowl_and_icon(base_name.replace(" ", "_"))  # Replace spaces with underscores for icon names
 
     def draw_bowl_and_icon(self, base):
         """Draws the bowl shape and the base icon on the canvas."""

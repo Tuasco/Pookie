@@ -2,7 +2,7 @@ import tkinter as tk
 from Data.Icons import Icons
 
 veggies= ["carrot", "broccoli", "beet", "tomato", "cucumber", "mushroom", "onion", "peas"]
-fruits = ["dragon_fruit", "melon", "watermelon", "grape", "kiwi", "avocado", "raspberry"]
+fruits = ["dragon fruit", "melon", "watermelon", "grape", "kiwi", "avocado", "raspberry"]
 
 class Veg_Fruit_Tab(tk.Frame):
     """
@@ -59,7 +59,7 @@ class VegFruitBowl(tk.Frame):
         self.icon_manager = Icons(self.bowl_canvas, size=(60, 60))
         
         # --- Draw the bowl and icon ---
-        self.draw_bowl_and_icon(veg_fruit_name)
+        self.draw_bowl_and_icon(veg_fruit_name.replace(" ", "_"))  # Replace spaces with underscores for icon names
 
     def draw_bowl_and_icon(self, veg_fruit):
         """Draws the bowl shape and the vegetable/fruit icon on the canvas."""

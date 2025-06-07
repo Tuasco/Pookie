@@ -1,8 +1,8 @@
 import tkinter as tk
 from Data.Icons import Icons
 
-extra_names = ["edamame", "mint", "lemon", "corn"]
-sauce_names = ["soy sauce", "sriracha", "lemon sauce", "spicy mayo", "wasabi"]
+extra_names = ["edamame", "mint", "lemon", "corn", "sesame"]
+sauce_names = ["soy sauce", "sriracha", "sour cream", "wasabi"]
 
 class Extras_Sauces_Tab(tk.Frame):
     """
@@ -56,13 +56,17 @@ class ExtrasSaucesBowl(tk.Frame):
         # --- Icon Manager for this specific canvas ---
         self.icon_manager = Icons(self.bowl_canvas, size=(60, 60))
         
-        # --- Draw the bowl and icon ---
-        self.draw_bowl_and_icon(extra_name)
-
+        if extra_name in sauce_names:
+            self.draw_icon(extra_name.replace(" ", "_").lower())  # Replace spaces with underscores for icon names
+        else:
+            self.draw_bowl_and_icon(extra_name.replace(" ", "_"))  # Replace spaces with underscores for icon names
+            
     def draw_bowl_and_icon(self, extra):
         """Draws the bowl shape and the extra/sauce icon on the canvas."""
         # Draw the bowl shape in the center of the 120x120 canvas
         self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="#8B4513", width=2)
-        
-        # Draw the icon in the center (60, 60)
         self.icon_manager.draw_icon(extra.lower(), 60, 60)
+    def draw_icon(self, sauce):
+        """Draws the sauce icon on the canvas."""
+        # Draw the icon in the center (60, 60)
+        self.icon_manager.draw_icon(sauce, 60, 60)
