@@ -5,11 +5,11 @@ from time import time
 
 protein_names=["tofu", "shrimp", "salmon", "meat", "egg", "chicken"]
 
+
 class Fire(tk.Frame):
     def __init__(self, parent) -> None:
         self.protein = None
         self.startTime = None
-
 
 
     def __str__(self) -> str:
@@ -43,6 +43,7 @@ class Fire(tk.Frame):
         self.startTime = None
 
         return prot
+
 
 class ProteinBowl(tk.Frame):
     """A widget representing a single protein bowl with its canvas and icon."""
@@ -94,14 +95,10 @@ class Protein_Tab(tk.Frame):
             # Pack it to the left, allowing them to arrange horizontally
             bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
             continue
-        
-    
+
 
 if __name__=="__main__":
     root = tk.Tk()
     app = Protein_Tab(parent=root, controller=None)
     app.pack(expand=True, fill="both")
     root.mainloop()
-            
-                    
-        
