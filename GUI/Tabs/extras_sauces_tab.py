@@ -31,23 +31,23 @@ class Extras_Sauces_Tab(tk.Frame):
         
         # Create a widget for each extra and sauce
         for extra in extra_names:
-            bowl_widget = ExtrasSaucesBowl(extras_container, extra_name=extra)
+            bowl_widget = ExtrasSaucesBowl(extras_container, item_name=extra, controller=self.controller)
             bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
             
         for sauce in sauce_names:
-            bowl_widget = ExtrasSaucesBowl(sauces_container, extra_name=sauce)
+            bowl_widget = ExtrasSaucesBowl(sauces_container, item_name=sauce, controller=self.controller)
             bowl_widget.pack(side=tk.LEFT, padx=10, pady=5)
             
         
-        
-        
 class ExtrasSaucesBowl(tk.Frame):
     """A widget representing a single extra/sauce bowl with its canvas and icon."""
-    def __init__(self, parent, extra_name):
+    def __init__(self, parent, item_name, controller):
         super().__init__(parent, bg=bg_color, padx=5, pady=5)
+        self.item_name = item_name
+        self.controller = controller
 
         # --- Label for the extra/sauce ---
-        label = tk.Label(self, text=extra_name.capitalize(), font=("Helvetica", 12), bg=bg_color, fg="saddlebrown")
+        label = tk.Label(self, text=item_name.capitalize(), font=("Helvetica", 12), bg=bg_color, fg="saddlebrown")
         label.pack(pady=5)
 
         # --- Canvas Setup for this specific bowl ---
@@ -56,18 +56,33 @@ class ExtrasSaucesBowl(tk.Frame):
 
         self.icon_manager = Icons(self.bowl_canvas, size=(60, 60))
 
-        
-        if extra_name in sauce_names:
-            self.draw_icon(extra_name.replace(" ", "_").lower())  # Replace spaces with underscores for icon names
-        else:
-            self.draw_bowl_and_icon(extra_name.replace(" ", "_"))  # Replace spaces with underscores for icon names
+        # Conditionally bind events and draw icons
+        if self.item_name in extra_names:
+            self.draw_bowl_and_icon(self.item_name.replace(" ", "_"))
+            # Make the widget clickable if it's an extra
+            self.bowl_canvas.config(cursor="hand2")
+            self.bowl_canvas.bind("<Button-1>", self.on_select_extra)
+            label.bind("<Button-1>", self.on_select_extra)
+        else: # It's a sauce
+            self.draw_icon(self.item_name.replace(" ", "_").lower())
+            # Make the widget clickable if it's a sauce
+            self.bowl_canvas.config(cursor="hand2")
+            self.bowl_canvas.bind("<Button-1>", self.on_select_sauce)
+            label.bind("<Button-1>", self.on_select_sauce)
             
     def draw_bowl_and_icon(self, extra):
         """Draws the bowl shape and the extra/sauce icon on the canvas."""
-
         self.bowl_canvas.create_oval(10, 10, 110, 110, fill="burlywood", outline="saddlebrown", width=2)
         self.icon_manager.draw_icon(extra.lower(), 60, 60)
+
     def draw_icon(self, sauce):
         """Draws the sauce icon on the canvas."""
-        # Draw the icon in the center (60, 60)
         self.icon_manager.draw_icon(sauce, 60, 60)
+
+    def on_select_extra(self, event):
+        """When this extra is clicked, set it up for placement."""
+        self.controller.set_ingredient_for_placement(self.item_name)
+
+    def on_select_sauce(self, event):
+        """When this sauce is clicked, set it up for drawing."""
+        self.controller.set_sauce_for_drawing(self.item_name)

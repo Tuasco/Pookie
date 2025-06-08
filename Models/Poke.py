@@ -1,8 +1,9 @@
 from Models.VFT import VFT
 from Models.Protein import Protein
+from Models.Sauce import Sauce
 
 class Poke:
-    def __init__(self, base: str = None, vft: list[VFT] = [], sauce: str = None, protein: Protein = None) -> None:
+    def __init__(self, base: str = None, vft: list[VFT] = [], sauce: Sauce = None, protein: Protein = None) -> None:
         self.base = base
         self.vft = vft
         self.sauce = sauce
@@ -51,7 +52,7 @@ class Poke:
         return self
     
 
-    def add_sauce(self, sauce: str) -> 'Poke':
+    def add_sauce(self, sauce: Sauce) -> 'Poke':
         """
         Add a certain sauce by name at a certain position
         """
