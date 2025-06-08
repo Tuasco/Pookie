@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 from time import time
 from functools import partial
-import random
-import math
 
 from Models.Poke import Poke
 from Models.Order import Order
@@ -121,6 +119,8 @@ class PookieGUI(tk.Tk):
         bowl_selection_frame.pack(side="top", fill="x", padx=self.padding, pady=(self.padding,0))
         self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="seashell", highlightthickness=0)
         self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
+        self.bowl_remove_button = tk.Button(bowl_selection_frame, text="Throw Bowl", command=self.remove_bowl, font=self.font_button, bg="lightcoral", fg="white", borderwidth=0, highlightthickness=0, cursor="hand2")
+        self.bowl_remove_button.pack(side="right", padx=self.padding, pady=self.padding)
         self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="seashell", highlightthickness=0)
         self.workspace_canvas.pack(side="bottom", fill="x", padx=self.padding, pady=self.padding)
         
@@ -222,10 +222,7 @@ class PookieGUI(tk.Tk):
 
 
     def add_new_bowl(self):
-        if not self.order_receipts:
-            messagebox.showinfo("No Orders", "You must take an order before you can create a bowl.")
-            self.show_frame("Order_Tab")
-            return
+        """ Adds a new bowl to the bowl management panel. """
         was_first_bowl = not self.bowls
         if was_first_bowl and self.current_page != "Order_Tab":
             self.bowl_management_panel.pack(side="bottom", fill="x")
@@ -234,10 +231,24 @@ class PookieGUI(tk.Tk):
         self.next_bowl_id += 1
         self.set_active_bowl(new_id)
 
+
+    def remove_bowl(self):
+        """ Removes a bowl from the bowl management panel. """
+        if self.active_bowl_id in self.bowls:
+            del self.bowls[self.active_bowl_id]
+            if self.active_bowl_id == self.active_bowl_id:
+                self.active_bowl_id = None
+                self.redraw_workspace()
+            self.update_bowl_selection_bar()
+            if not self.bowls:
+                self.bowl_management_panel.pack_forget()
+
+
     def set_active_bowl(self, bowl_id):
         self.active_bowl_id = bowl_id
         self.update_bowl_selection_bar()
         self.redraw_workspace()
+
 
     def update_bowl_selection_bar(self):
         for widget in self.bowl_buttons_frame.winfo_children():
@@ -249,11 +260,19 @@ class PookieGUI(tk.Tk):
                 btn.config(relief="groove", bg="salmon", fg="white")
             btn.pack(side="left", padx=2, pady=2)
 
+
     def add_base_to_bowl(self, base):
         if self.active_bowl_id is None: return
         poke = self.bowls[self.active_bowl_id]
+        if poke.base is not None:
+            messagebox.showwarning("Base Already Set", "You can only set one base per bowl.")
+            return
         poke.base = base
+        poke.protein = None  # Reset protein when a new base is added
+        poke.vft.clear()  # Clear toppings when a new base is added
+        poke.sauce = None  # Clear sauce when a new base is added
         self.redraw_workspace()
+
 
     def set_ingredient_for_placement(self, ingredient_name):
         if self.active_bowl_id is None:
@@ -263,6 +282,7 @@ class PookieGUI(tk.Tk):
         self.ingredient_to_place = ingredient_name
         self.workspace_canvas.config(cursor="crosshair")
 
+
     def set_sauce_for_drawing(self, sauce_name):
         if self.active_bowl_id is None:
             messagebox.showwarning("No Active Bowl", "Please select a bowl before adding sauce.")
@@ -271,10 +291,12 @@ class PookieGUI(tk.Tk):
         self.sauce_to_draw = sauce_name
         self.workspace_canvas.config(cursor="spraycan")
 
+
     def on_workspace_press(self, event):
         if self.sauce_to_draw:
             self.is_drawing_sauce = True
             self.sauce_path_points = [(event.x, event.y)]
+
         
     def on_workspace_drag(self, event):
         if not self.is_drawing_sauce: return
@@ -283,6 +305,7 @@ class PookieGUI(tk.Tk):
             p1, p2 = self.sauce_path_points[-2], self.sauce_path_points[-1]
             color = self.sauce_colors.get(self.sauce_to_draw, "black")
             self.workspace_canvas.create_line(p1, p2, fill=color, width=5, capstyle=tk.ROUND, smooth=True)
+
 
     def on_workspace_release(self, event):
         if self.ingredient_to_place:
@@ -299,6 +322,7 @@ class PookieGUI(tk.Tk):
 
         self.workspace_canvas.config(cursor="")
         self.redraw_workspace()
+
 
     def redraw_workspace(self):
         self.workspace_canvas.delete("all")
@@ -332,7 +356,7 @@ class PookieGUI(tk.Tk):
         if "Order_Tab" in self.pages:
             self.pages["Order_Tab"].show_random_client(self.timer)
         self.timer += 1
-        self.after(200, self.sec_loop)
+        self.after(1000, self.sec_loop)
 
 if __name__=="__main__":
     pygame.mixer.init()

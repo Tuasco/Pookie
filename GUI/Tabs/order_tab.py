@@ -40,7 +40,7 @@ class Order_Tab(tk.Frame):
         self.display_current_client()
 
     def show_random_client(self, timer):
-        if timer % 30 != 0 or not timer: return
+        if timer % 60 != 0: return
         if len(self.pending_orders) >= 5: return
 
         order = random.choice(orders)
