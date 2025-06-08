@@ -10,6 +10,7 @@ from Models.Order import Order
 from Models.VFT import VFT
 from Models.Sauce import Sauce
 from Data.Icons import Icons
+from GUI.Tabs.order_detail_window import OrderDetailWindow
 
 from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 import pygame
@@ -78,7 +79,7 @@ class PookieGUI(tk.Tk):
 
         # Sizes for Icons and Canvases
         self.size_workspace_base_icon = int(self.responsive_workspace_height * 0.6)
-        self.size_workspace_topping_icon = int(self.responsive_workspace_height * 0.25)
+        self.size_workspace_topping_icon = int(self.responsive_workspace_height * 0.2)
         self.size_selection_canvas = int(screen_height * 0.11)
         self.size_selection_icon = int(self.size_selection_canvas * 0.5)
         self.padding = int(screen_height / 120)
@@ -152,11 +153,11 @@ class PookieGUI(tk.Tk):
         self.music_canvas.delete("all")
         if self.music_on:
             pygame.mixer.music.stop()
-            self.music_icon_loader.draw_icon("sound_off", *self.music_canvas.winfo_geometry().split('+')[0].split('x'))
+            self.music_icon_loader.draw_icon("sound_off", self.music_canvas.winfo_height()/2, self.music_canvas.winfo_height()/2)
             self.music_on = False
         else:
             pygame.mixer.music.play(loops=-1)
-            self.music_icon_loader.draw_icon("sound_on", *self.music_canvas.winfo_geometry().split('+')[0].split('x'))
+            self.music_icon_loader.draw_icon("sound_on", self.music_canvas.winfo_height()/2, self.music_canvas.winfo_height()/2)
             self.music_on = True
 
 
@@ -167,16 +168,25 @@ class PookieGUI(tk.Tk):
         if page_name == "Order_Tab":
             self.bowl_management_panel.pack_forget()
         elif self.bowls:
-             self.bowl_management_panel.pack(side="bottom")
+             self.bowl_management_panel.pack(side="bottom", fill="x")
 
 
     def select_order(self, order_id, widget):
+        """ Selects an order and displays its details in a pop-up window. """
+        # --- Highlighting Logic ---
         for _, lbl in self.order_receipts:
             lbl.config(bg="white")
         widget.config(bg="#e3f5eb", relief="groove")
         self.selected_order = order_id
-        print(f"Selected: {order_id}")
-
+        
+        # --- New Display Logic ---
+        # Find the full order object that matches the clicked order_id
+        order_to_display = next((order for order in self.orders if order.order_id == order_id), None)
+        
+        if order_to_display:
+            poke_object = order_to_display.orderedPoke
+            # Call the new pop-up window directly
+            OrderDetailWindow(self, poke_object)
 
     def create_order_panel(self, parent):
         right_panel = tk.Frame(parent, width=self.responsive_right_panel_width, bg="lightblue")
@@ -322,7 +332,7 @@ class PookieGUI(tk.Tk):
         if "Order_Tab" in self.pages:
             self.pages["Order_Tab"].show_random_client(self.timer)
         self.timer += 1
-        self.after(1000, self.sec_loop)
+        self.after(200, self.sec_loop)
 
 if __name__=="__main__":
     pygame.mixer.init()

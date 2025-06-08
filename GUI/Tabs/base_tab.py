@@ -2,10 +2,12 @@ import tkinter as tk
 from Data.Icons import Icons
 
 base_names = ["salad", "rice", "brown rice", "quinoa", "pasta", "buckwheat"]
+bg_color = "seashell"  # Define a background color for the tab
+fg_color = "saddlebrown"  # Define a foreground color for the tab
 
 class Base_Tab(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent, bg="seashell")
+        super().__init__(parent, bg=bg_color)
         self.controller = controller
         
         new_bowl_button = tk.Button(
@@ -19,10 +21,10 @@ class Base_Tab(tk.Frame):
         separator = tk.Frame(self, height=2, bd=1, relief=tk.SUNKEN)
         separator.pack(fill=tk.X, padx=5, pady=5)
         
-        label = tk.Label(self, text="Select Base", font=self.controller.font_title, bg="seashell")
+        label = tk.Label(self, text="Select Base", font=self.controller.font_title, bg=bg_color, fg=fg_color)
         label.pack(pady=self.controller.padding)
         
-        bowls_container = tk.Frame(self, bg="seashell")
+        bowls_container = tk.Frame(self, bg=bg_color)
         bowls_container.pack(pady=self.controller.padding, padx=self.controller.padding)
         
         for base in base_names:
@@ -31,15 +33,15 @@ class Base_Tab(tk.Frame):
 
 class BaseBowl(tk.Frame):
     def __init__(self, parent, base_name, controller):
-        super().__init__(parent, bg="seashell", padx=5, pady=5)
+        super().__init__(parent, bg=bg_color, padx=5, pady=5)
         self.base_name = base_name
         self.controller = controller
 
-        label = tk.Label(self, text=base_name.capitalize(), font=self.controller.font_label, bg="seashell", fg="saddlebrown")
+        label = tk.Label(self, text=base_name.capitalize(), font=self.controller.font_label, bg=bg_color, fg="saddlebrown")
         label.pack(pady=5)
 
         canvas_size = self.controller.size_selection_canvas
-        self.bowl_canvas = tk.Canvas(self, width=canvas_size, height=canvas_size, highlightthickness=0, bg="seashell", cursor="hand2")
+        self.bowl_canvas = tk.Canvas(self, width=canvas_size, height=canvas_size, highlightthickness=0, bg=bg_color, cursor="hand2")
         self.bowl_canvas.pack()
         
         icon_size = self.controller.size_selection_icon
