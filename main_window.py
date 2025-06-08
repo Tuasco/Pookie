@@ -28,7 +28,7 @@ class PookieGUI(tk.Tk):
         self.timer = 0
         self.selected_order = None
         self.orders = []
-        pygame.mixer.music.stop()
+
         # --- Music State ---
         self.music_on = True # [NEW] State variable for music
 
@@ -106,7 +106,8 @@ class PookieGUI(tk.Tk):
 
         self.show_frame("Order_Tab")
         self.sec_loop()
-    # --- Music Toggle Function ---
+
+    
     def toggle_music(self, event=None):
         """Toggles the music on and off and updates the icon."""
         self.music_canvas.delete("all") # Clear the old icon
@@ -121,9 +122,7 @@ class PookieGUI(tk.Tk):
 
 
     def show_frame(self, page_name):
-        """
-        Show a frame for the given page name and manage bowl panel visibility.
-        """
+        """Show a frame for the given page name and manage bowl panel visibility."""
         self.current_page = page_name
         frame = self.pages[page_name]
         frame.tkraise()
@@ -143,6 +142,7 @@ class PookieGUI(tk.Tk):
         widget.config(bg="#e3f5eb", relief="groove")
         self.selected_order = order_id
         print(f"Selected: {order_id}")
+
 
     def create_order_panel(self, parent):
         right_panel = tk.Frame(parent, width=self.responsive_right_panel_width, bg="lightblue")
@@ -185,6 +185,7 @@ class PookieGUI(tk.Tk):
         self.orders.append(Order(order_id, poke, time()))
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
 
+
     def add_new_bowl(self):
         """Creates a new bowl, adds it to the list, and makes it active."""
 
@@ -198,7 +199,6 @@ class PookieGUI(tk.Tk):
         self.next_bowl_id += 1
         self.set_active_bowl(new_id)
 
-        
 
     def set_active_bowl(self, bowl_id):
         """Sets the specified bowl as active and refreshes the UI."""
@@ -221,6 +221,18 @@ class PookieGUI(tk.Tk):
             if bowl_id == self.active_bowl_id:
                 btn.config(relief="sunken", bg="#cceeff")
             btn.pack(side="left", padx=2, pady=2)
+
+
+    def add_base_to_bowl(self, base):
+        """Adds a base to the currently active bowl."""
+        if self.active_bowl_id is None:
+            print("No active bowl to add base to.")
+            return
+        
+        poke = self.bowls[self.active_bowl_id]
+        poke.base = base
+        print(f"Base '{base}' added to bowl {self.active_bowl_id}.")
+        # Still need to add the base to the bowl's canvas
 
 
     def redraw_workspace(self):
