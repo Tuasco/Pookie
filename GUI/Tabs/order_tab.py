@@ -4,7 +4,7 @@ from Models.Poke import Poke
 from Customer_simulation.filereader import file_reader_dico
 
 orders = file_reader_dico("Customer_simulation/orders.csv")
-bg_color = "seashell"  # Background color for the tab
+bg_color = "seashell"
 
 class Order_Tab(tk.Frame):
     def __init__(self, parent, controller):
@@ -22,11 +22,11 @@ class Order_Tab(tk.Frame):
         self.stickman_canvas = tk.Canvas(self, width=200, height=300, bg=bg_color, highlightthickness=0)
         self.stickman_canvas.grid(row=0, column=0, padx=20, pady=20)
         
-        self.speech = tk.Label(self, text="", font=("Helvetica", 14), wraplength=300,
+        self.speech = tk.Label(self, text="", font=self.controller.font_label, wraplength=300,
                                bg="#f0f0f0", relief="solid", bd=1, justify="left", padx=10, pady=10)
         self.speech.grid(row=0, column=1, padx=20, pady=20, sticky="n")
 
-        self.take_order_button = tk.Button(self, text="Take Order", font=("Helvetica", 12),command=self.take_order)
+        self.take_order_button = tk.Button(self, text="Take Order", font=self.controller.font_button, command=self.take_order)
         self.take_order_button.grid(row=1, column=0, columnspan=2, pady=10)
 
 

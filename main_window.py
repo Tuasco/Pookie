@@ -64,29 +64,45 @@ class PookieGUI(tk.Tk):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
 
-        # Define responsive sizes ---
+        # --- Define Responsive Sizes & Fonts ---
         self.responsive_right_panel_width = int(screen_width * 0.15) 
         self.responsive_workspace_height = int(screen_height * 0.30)
+
+        # Fonts
+        base_font_size = max(10, int(screen_height / 60))
+        self.font_nav = ("Helvetica", base_font_size, "bold")
+        self.font_title = ("Helvetica", int(base_font_size * 1.1), "bold")
+        self.font_button = ("Helvetica", int(base_font_size * 0.8), "bold")
+        self.font_receipt = ("Courier", int(base_font_size * 0.9))
+        self.font_label = ("Helvetica", int(base_font_size * 0.75))
+
+        # Sizes for Icons and Canvases
+        self.size_workspace_base_icon = int(self.responsive_workspace_height * 0.6)
+        self.size_workspace_topping_icon = int(self.responsive_workspace_height * 0.25)
+        self.size_selection_canvas = int(screen_height * 0.11)
+        self.size_selection_icon = int(self.size_selection_canvas * 0.5)
+        self.padding = int(screen_height / 120)
             
         pygame.mixer.music.stop()
         
-        # UI Initialization ---
+        # --- UI Initialization ---
         nav_bar = tk.Frame(self, bg="lightpink")
 
         for page in tab_classes:
             cmd = partial(self.show_frame, page.__name__)
-            b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=NavBarFont, command=cmd, bg="palevioletred", fg="white", borderwidth=0, highlightthickness=0, cursor="hand2")
-            b.pack(side="left", padx=10, pady=4)
+            b = tk.Button(nav_bar, text=page.__name__.replace("_"," ")[:-4], font=self.font_nav, command=cmd, bg="palevioletred", fg="white", borderwidth=0, highlightthickness=0, cursor="hand2")
+            b.pack(side="left", padx=self.padding, pady=self.padding)
 
-        close_button = tk.Button(nav_bar, text="X", font=NavBarFont, command=self.destroy, borderwidth=0, bg="mediumvioletred", fg="white", highlightthickness=0, cursor="hand2")
-        close_button.pack(side="right", padx=10, pady=4)
+        close_button = tk.Button(nav_bar, text="X", font=self.font_nav, command=self.destroy, borderwidth=0, bg="mediumvioletred", fg="white", highlightthickness=0, cursor="hand2")
+        close_button.pack(side="right", padx=self.padding, pady=self.padding)
 
         # --- Music Button Setup ---
-        self.music_canvas = tk.Canvas(nav_bar, width=24, height=24, bg="lightpink", highlightthickness=0, cursor="hand2")
-        self.music_canvas.pack(side="right", padx=10, pady=4)
+        music_canvas_size = int(base_font_size * 1.3)
+        self.music_canvas = tk.Canvas(nav_bar, width=music_canvas_size, height=music_canvas_size, bg="lightpink", highlightthickness=0, cursor="hand2")
+        self.music_canvas.pack(side="right", padx=self.padding, pady=self.padding)
         
-        self.music_icon_loader = Icons(self.music_canvas, size=(24, 24))
-        self.music_icon_loader.draw_icon("sound_on", 12, 12) 
+        self.music_icon_loader = Icons(self.music_canvas, size=(music_canvas_size, music_canvas_size))
+        self.music_icon_loader.draw_icon("sound_on", music_canvas_size/2, music_canvas_size/2) 
         
         self.music_canvas.bind("<Button-1>", self.toggle_music) 
 
@@ -96,29 +112,26 @@ class PookieGUI(tk.Tk):
         main_frame = tk.Frame(self)
         main_frame.pack(side="top", fill="both", expand=True)
 
-        # Create the Order Panel first and pack it to the right
         self.create_order_panel(main_frame)
 
         # Create the Bowl Management Panel 
         self.bowl_management_panel = tk.Frame(main_frame)
-        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg=bg_color) 
-        bowl_selection_frame.pack(side="top", fill="x", padx=5, pady=(5,0))
-        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg=bg_color, highlightthickness=0)
+        bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="seashell") 
+        bowl_selection_frame.pack(side="top", fill="x", padx=self.padding, pady=(self.padding,0))
+        self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="seashell", highlightthickness=0)
         self.bowl_buttons_frame.pack(side="left", fill="x", expand=True)
-        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg=bg_color, highlightthickness=0)
-        self.workspace_canvas.pack(side="bottom", fill="x", padx=5, pady=5)
+        self.workspace_canvas = tk.Canvas(self.bowl_management_panel, height=self.responsive_workspace_height, bg="seashell", highlightthickness=0)
+        self.workspace_canvas.pack(side="bottom", fill="x", padx=self.padding, pady=self.padding)
         
-        # Bind all mouse events for the workspace
         self.workspace_canvas.bind("<ButtonPress-1>", self.on_workspace_press)
         self.workspace_canvas.bind("<B1-Motion>", self.on_workspace_drag)
         self.workspace_canvas.bind("<ButtonRelease-1>", self.on_workspace_release)
 
         # Create icon managers for the workspace canvas
-        self.workspace_icon_manager = Icons(self.workspace_canvas, size=(200, 200))
-        self.toppings_icon_manager = Icons(self.workspace_canvas, size=(45, 45))
+        self.workspace_icon_manager = Icons(self.workspace_canvas, size=(self.size_workspace_base_icon, self.size_workspace_base_icon))
+        self.toppings_icon_manager = Icons(self.workspace_canvas, size=(self.size_workspace_topping_icon, self.size_workspace_topping_icon))
 
-        # Create the main container for tabs last.
-        self.container = tk.Frame(main_frame, bg=bg_color)
+        self.container = tk.Frame(main_frame, bg="seashell")
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
@@ -139,11 +152,11 @@ class PookieGUI(tk.Tk):
         self.music_canvas.delete("all")
         if self.music_on:
             pygame.mixer.music.stop()
-            self.music_icon_loader.draw_icon("sound_off", 12, 12)
+            self.music_icon_loader.draw_icon("sound_off", *self.music_canvas.winfo_geometry().split('+')[0].split('x'))
             self.music_on = False
         else:
             pygame.mixer.music.play(loops=-1)
-            self.music_icon_loader.draw_icon("sound_on", 12, 12)
+            self.music_icon_loader.draw_icon("sound_on", *self.music_canvas.winfo_geometry().split('+')[0].split('x'))
             self.music_on = True
 
 
@@ -151,7 +164,6 @@ class PookieGUI(tk.Tk):
         self.current_page = page_name
         frame = self.pages[page_name]
         frame.tkraise()
-
         if page_name == "Order_Tab":
             self.bowl_management_panel.pack_forget()
         elif self.bowls:
@@ -171,17 +183,14 @@ class PookieGUI(tk.Tk):
         right_panel.pack(side="right", fill="y")
         right_panel.pack_propagate(False)
 
-        tk.Label(right_panel, text="Orders", font=("Helvetica", 20, "bold"), bg="lightblue").pack(pady=5)
+        tk.Label(right_panel, text="Orders", font=self.font_title, bg="lightblue").pack(pady=self.padding)
         self.order_receipts = []
         scroll_container = tk.Frame(right_panel, bg="lightblue")
-        scroll_container.pack(fill="both", expand=True, padx=5, pady=5)
+        scroll_container.pack(fill="both", expand=True, padx=self.padding, pady=self.padding)
         canvas = tk.Canvas(scroll_container, borderwidth=0, bg="lightblue", highlightthickness=0)
         scrollbar = tk.Scrollbar(scroll_container, orient="vertical", command=canvas.yview)
         self.order_frame = tk.Frame(canvas, bg="lightblue")
-        self.order_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
+        self.order_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         frame_id = canvas.create_window((0, 0), window=self.order_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
         def on_canvas_configure(event):
@@ -190,14 +199,13 @@ class PookieGUI(tk.Tk):
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
 
-
     def register_order(self, poke):
         order_id = f"Order #{1001+len(self.order_receipts)}"
-        vft_names = [item['name'] for item in poke.vft] if (poke.vft and isinstance(poke.vft[0], dict)) else poke.vft
+        vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
         sauce_name = poke.sauce.name if hasattr(poke.sauce, 'name') else poke.sauce
-        poke_text= f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace('\'', '').replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein.name}"
-        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=("Courier", 15), bd=1, borderwidth=0, pady=5, justify="left", padx=5)
-        label.pack(pady=4, fill="x", padx=5)
+        poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein.name}"
+        label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=self.font_receipt, bd=1, borderwidth=0, pady=self.padding, justify="left", padx=self.padding)
+        label.pack(pady=self.padding, fill="x", padx=self.padding)
         self.order_receipts.append((order_id, label))
         self.orders.append(Order(order_id, poke, time()))
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
@@ -218,7 +226,6 @@ class PookieGUI(tk.Tk):
 
     def set_active_bowl(self, bowl_id):
         self.active_bowl_id = bowl_id
-        print(f"Active bowl set to: {bowl_id}")
         self.update_bowl_selection_bar()
         self.redraw_workspace()
 
@@ -227,8 +234,7 @@ class PookieGUI(tk.Tk):
             widget.destroy()
         for bowl_id, poke in sorted(self.bowls.items()):
             cmd = partial(self.set_active_bowl, bowl_id)
-            btn_text = f"Bowl {bowl_id}"
-            btn = tk.Button(self.bowl_buttons_frame, text=btn_text, command=cmd, relief="raised")
+            btn = tk.Button(self.bowl_buttons_frame, text=f"Bowl {bowl_id}", command=cmd, relief="raised", font=self.font_button)
             if bowl_id == self.active_bowl_id:
                 btn.config(relief="groove", bg="salmon", fg="white")
             btn.pack(side="left", padx=2, pady=2)
@@ -240,76 +246,58 @@ class PookieGUI(tk.Tk):
         self.redraw_workspace()
 
     def set_ingredient_for_placement(self, ingredient_name):
-        """Puts the game into 'placement mode' for a given ingredient."""
         if self.active_bowl_id is None:
             messagebox.showwarning("No Active Bowl", "Please select a bowl before adding ingredients.")
             return
-        self.sauce_to_draw = None # Exit sauce mode if active
+        self.sauce_to_draw = None 
         self.ingredient_to_place = ingredient_name
         self.workspace_canvas.config(cursor="crosshair")
 
     def set_sauce_for_drawing(self, sauce_name):
-        """Puts the game into 'sauce drawing mode'."""
         if self.active_bowl_id is None:
             messagebox.showwarning("No Active Bowl", "Please select a bowl before adding sauce.")
             return
-        self.ingredient_to_place = None # Exit placement mode
+        self.ingredient_to_place = None 
         self.sauce_to_draw = sauce_name
         self.workspace_canvas.config(cursor="spraycan")
 
     def on_workspace_press(self, event):
-        """Handles the start of a click or drag on the workspace."""
         if self.sauce_to_draw:
             self.is_drawing_sauce = True
             self.sauce_path_points = [(event.x, event.y)]
         
     def on_workspace_drag(self, event):
-        """Draws the sauce trail as the user drags the mouse."""
-        if not self.is_drawing_sauce:
-            return
-        
+        if not self.is_drawing_sauce: return
         self.sauce_path_points.append((event.x, event.y))
         if len(self.sauce_path_points) > 1:
-            p1 = self.sauce_path_points[-2]
-            p2 = self.sauce_path_points[-1]
+            p1, p2 = self.sauce_path_points[-2], self.sauce_path_points[-1]
             color = self.sauce_colors.get(self.sauce_to_draw, "black")
             self.workspace_canvas.create_line(p1, p2, fill=color, width=5, capstyle=tk.ROUND, smooth=True)
 
     def on_workspace_release(self, event):
-        """Finalizes the placement of an ingredient or the drawing of a sauce."""
-        # --- Handle Ingredient Placement ---
         if self.ingredient_to_place:
             distance_sq = (event.x - self.bowl_center_x)**2 + (event.y - self.bowl_center_y)**2
-            if distance_sq > self.bowl_radius**2:
-                messagebox.showwarning("Missed!", "You must click inside the bowl to place an ingredient.")
-            else:
-                poke = self.bowls[self.active_bowl_id]
-                new_vft = VFT(name=self.ingredient_to_place, position=(event.x, event.y))
-                poke.vft.append(new_vft)
-            self.ingredient_to_place = None # Exit placement mode
+            if distance_sq <= self.bowl_radius**2:
+                self.bowls[self.active_bowl_id].vft.append(VFT(name=self.ingredient_to_place, position=(event.x, event.y)))
+            self.ingredient_to_place = None 
         
-        # --- Handle Sauce Drawing ---
         if self.is_drawing_sauce:
             self.is_drawing_sauce = False
             if len(self.sauce_path_points) > 1:
-                poke = self.bowls[self.active_bowl_id]
-                poke.sauce = Sauce(name=self.sauce_to_draw, path=self.sauce_path_points)
-            self.sauce_to_draw = None # Exit drawing mode
+                self.bowls[self.active_bowl_id].sauce = Sauce(name=self.sauce_to_draw, path=self.sauce_path_points)
+            self.sauce_to_draw = None 
 
         self.workspace_canvas.config(cursor="")
         self.redraw_workspace()
 
     def redraw_workspace(self):
-        """Clears the workspace and draws the currently active bowl and all its contents."""
         self.workspace_canvas.delete("all")
         if self.active_bowl_id is None: return
         
         self.update_idletasks()
-        canvas_w = self.workspace_canvas.winfo_width()
-        canvas_h = self.workspace_canvas.winfo_height()
+        canvas_w, canvas_h = self.workspace_canvas.winfo_width(), self.workspace_canvas.winfo_height()
 
-        self.bowl_center_x = canvas_w / 2
-        self.bowl_center_y = canvas_h / 2
+        self.bowl_center_x, self.bowl_center_y = canvas_w / 2, canvas_h / 2
         diameter = min(canvas_w, canvas_h) * 0.85
         self.bowl_radius = diameter / 2
         
@@ -320,8 +308,7 @@ class PookieGUI(tk.Tk):
         self.workspace_canvas.create_oval(x1, y1, x2, y2, fill="peru", outline="saddlebrown", width=3)
         
         if active_poke.base:
-            icon_name = active_poke.base.replace(" ", "_").lower()
-            self.workspace_icon_manager.draw_icon(icon_name, self.bowl_center_x, self.bowl_center_y)
+            self.workspace_icon_manager.draw_icon(active_poke.base.replace(" ", "_").lower(), self.bowl_center_x, self.bowl_center_y)
 
         if active_poke.sauce and active_poke.sauce.path:
             color = self.sauce_colors.get(active_poke.sauce.name, "black")
@@ -329,9 +316,7 @@ class PookieGUI(tk.Tk):
 
         if active_poke.vft:
             for vft_item in active_poke.vft:
-                icon_name = vft_item.name.replace(" ", "_").lower()
-                pos_x, pos_y = vft_item.position
-                self.toppings_icon_manager.draw_icon(icon_name, pos_x, pos_y)
+                self.toppings_icon_manager.draw_icon(vft_item.name.replace(" ", "_").lower(), vft_item.position[0], vft_item.position[1])
 
     def sec_loop(self):
         if "Order_Tab" in self.pages:

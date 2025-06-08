@@ -11,11 +11,8 @@ class Serve_Tab(tk.Frame):
         super().__init__(parent, bg=bg_color)
         self.controller = controller
         
-        # Create a label for the serve tab
-        label = tk.Label(self, text="Serve Your Dish", font=("Helvetica", 16), bg=bg_color)
-        label.pack(pady=10)
+        label = tk.Label(self, text="Serve Your Dish", font=self.controller.font_title, bg=bg_color)
+        label.pack(pady=self.controller.padding)
     
-        
-        # Create a button to serve the dish
-        self.serve_button = tk.Button(self, text="Serve", font=("Helvetica", 12, "bold"))
-        self.serve_button.pack(pady=10)
+        self.serve_button = tk.Button(self, text="Serve", font=self.controller.font_button)
+        self.serve_button.pack(pady=self.controller.padding)
