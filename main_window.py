@@ -17,8 +17,6 @@ import sys, os, inspect
 sys.path.insert(0, os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
 tab_classes=[order_tab.Order_Tab, base_tab.Base_Tab, veg_fruit_tab.Veg_Fruit_Tab, protein_tab.Protein_Tab, extras_sauces_tab.Extras_Sauces_Tab, serve_tab.Serve_Tab]
-NavBarFont=("Helvetica", 18, "bold")
-bg_color = "seashell"  # Background color for the bowl management panel
 
 class PookieGUI(tk.Tk):
     """
@@ -33,6 +31,7 @@ class PookieGUI(tk.Tk):
         self.timer = 0
         self.selected_order = None
         self.orders = []
+        self.wallet = 0.00
 
         # --- Music State ---
         self.music_on = True
@@ -104,6 +103,9 @@ class PookieGUI(tk.Tk):
         self.music_icon_loader.draw_icon("sound_on", music_canvas_size/2, music_canvas_size/2) 
         
         self.music_canvas.bind("<Button-1>", self.toggle_music) 
+
+        self.tip_label = tk.Label(nav_bar, text=f"Wallet: $0", font=self.font_title, fg="green", bg="lightpink")
+        self.tip_label.pack(side="right", padx=self.padding, pady=self.padding)
 
         nav_bar.pack(side="top", fill="x")
         
@@ -234,7 +236,7 @@ class PookieGUI(tk.Tk):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
         sauce_name = poke.sauce.name if hasattr(poke.sauce, 'name') else poke.sauce
-        poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein.name}"
+        poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=self.font_receipt, bd=1, borderwidth=0, pady=self.padding, justify="left", padx=self.padding)
         label.pack(pady=self.padding, fill="x", padx=self.padding)
         self.order_receipts.append((order_id, label))
@@ -384,14 +386,15 @@ class PookieGUI(tk.Tk):
             messagebox.showwarning("No Order Selected", "Please select an order to serve the bowl.")
             return
         
-        poke = self.bowls[self.active_bowl_id]
-        print(f"Serving {poke} to {self.selected_order.order_id} for expected poke {self.selected_order.orderedPoke}")
+        tip += 4
+
+        self.tip_label.configure(text=f"Wallet: ${tip:.2f}")
+        self.pages["Serve_Tab"].display_serving_feedback(tip, 50, 50, 50, 50) # Show feedback animation in the Serve tab
         self.pages["Order_Tab"].remove_client_from_waiting_area(self.selected_order.order_id) # Remove client from waiting area
         self.orders.remove(self.selected_order) # Remove order from orders list
         self.redraw_order_panel() # Redraw order panel with new order list
         self.remove_bowl() # Remove the bowl from the working aread
         self.selected_order = None # Set selected order to None (no order selected)
-        print(self.orders) # Just for debug
 
 
     def sec_loop(self):

@@ -95,8 +95,6 @@ class Order_Tab(tk.Frame):
             self.stickman_canvas.delete("all")
             self.queue_label.config(text="No clients in line.")
 
-        print(client_that_ordered)
-
 
     def add_client_to_waiting_area(self, client_data, order_id):
         client_frame = tk.Frame(self.waiting_area_frame, bg="lightgoldenrodyellow")
