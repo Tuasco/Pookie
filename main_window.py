@@ -108,13 +108,13 @@ class PookieGUI(tk.Tk):
         nav_bar.pack(side="top", fill="x")
         
         # --- Main Frame for Content ---
-        main_frame = tk.Frame(self)
-        main_frame.pack(side="top", fill="both", expand=True)
+        self.main_frame = tk.Frame(self)
+        self.main_frame.pack(side="top", fill="both", expand=True)
 
-        self.create_order_panel(main_frame)
+        self.create_order_panel(self.main_frame)
 
         # Create the Bowl Management Panel 
-        self.bowl_management_panel = tk.Frame(main_frame)
+        self.bowl_management_panel = tk.Frame(self.main_frame)
         bowl_selection_frame = tk.Frame(self.bowl_management_panel, bg="seashell") 
         bowl_selection_frame.pack(side="top", fill="x", padx=self.padding, pady=(self.padding,0))
         self.bowl_buttons_frame = tk.Frame(bowl_selection_frame, bg="seashell", highlightthickness=0)
@@ -132,7 +132,7 @@ class PookieGUI(tk.Tk):
         self.workspace_icon_manager = Icons(self.workspace_canvas, size=(self.size_workspace_base_icon, self.size_workspace_base_icon))
         self.toppings_icon_manager = Icons(self.workspace_canvas, size=(self.size_workspace_topping_icon, self.size_workspace_topping_icon))
 
-        self.container = tk.Frame(main_frame, bg="seashell")
+        self.container = tk.Frame(self.main_frame, bg="seashell")
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
@@ -177,16 +177,8 @@ class PookieGUI(tk.Tk):
         for _, lbl in self.order_receipts:
             lbl.config(bg="white")
         widget.config(bg="#e3f5eb", relief="groove")
-        self.selected_order = order_id
+        self.selected_order = next((order for order in self.orders if order.order_id == order_id), None)
         
-        # --- New Display Logic ---
-        # Find the full order object that matches the clicked order_id
-        order_to_display = next((order for order in self.orders if order.order_id == order_id), None)
-        
-        if order_to_display:
-            poke_object = order_to_display.orderedPoke
-            # Call the new pop-up window directly
-            OrderDetailWindow(self, poke_object)
 
     def create_order_panel(self, parent):
         right_panel = tk.Frame(parent, width=self.responsive_right_panel_width, bg="lightblue")
@@ -209,6 +201,35 @@ class PookieGUI(tk.Tk):
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
 
+
+    def redraw_order_panel(self):
+        """Clears and redraws all order receipts to match the self.orders list."""
+        # Destroy all existing receipt widgets to clear the panel
+        for widget in self.order_frame.winfo_children():
+            widget.destroy()
+
+        # Clear the list that tracks receipt widgets
+        self.order_receipts.clear()
+
+        # Re-create all receipts from the current self.orders list
+        for order in self.orders:
+            poke = order.orderedPoke
+            
+            # Recreate the text for the receipt label (logic from your register_order)
+            vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
+            sauce_name = poke.sauce.name if hasattr(poke.sauce, 'name') else poke.sauce
+            poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein.name}"
+            
+            label = tk.Label(self.order_frame, text=f"{order.order_id}\n{poke_text}", bg="white", font=self.font_receipt, bd=1, borderwidth=0, pady=self.padding, justify="left", padx=self.padding)
+            label.pack(pady=self.padding, fill="x", padx=self.padding)
+            
+            # Re-bind the click event, capturing the current order_id and label
+            label.bind("<Button-1>", lambda e, oid=order.order_id, lbl=label: self.select_order(oid, lbl))
+            
+            # Add the new receipt to the tracker list
+            self.order_receipts.append((order.order_id, label))
+
+
     def register_order(self, poke):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
@@ -219,6 +240,7 @@ class PookieGUI(tk.Tk):
         self.order_receipts.append((order_id, label))
         self.orders.append(Order(order_id, poke, time()))
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
+        return order_id
 
 
     def add_new_bowl(self):
@@ -351,6 +373,26 @@ class PookieGUI(tk.Tk):
         if active_poke.vft:
             for vft_item in active_poke.vft:
                 self.toppings_icon_manager.draw_icon(vft_item.name.replace(" ", "_").lower(), vft_item.position[0], vft_item.position[1])
+
+
+    def serve_poke(self):
+        if self.active_bowl_id is None:
+            messagebox.showwarning("No Active Bowl", "Please select a bowl to serve.")
+            return
+        
+        if self.selected_order is None:
+            messagebox.showwarning("No Order Selected", "Please select an order to serve the bowl.")
+            return
+        
+        poke = self.bowls[self.active_bowl_id]
+        print(f"Serving {poke} to {self.selected_order.order_id} for expected poke {self.selected_order.orderedPoke}")
+        self.pages["Order_Tab"].remove_client_from_waiting_area(self.selected_order.order_id) # Remove client from waiting area
+        self.orders.remove(self.selected_order) # Remove order from orders list
+        self.redraw_order_panel() # Redraw order panel with new order list
+        self.remove_bowl() # Remove the bowl from the working aread
+        self.selected_order = None # Set selected order to None (no order selected)
+        print(self.orders) # Just for debug
+
 
     def sec_loop(self):
         if "Order_Tab" in self.pages:

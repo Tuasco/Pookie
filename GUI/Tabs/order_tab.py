@@ -16,6 +16,7 @@ class Order_Tab(tk.Frame):
 
         self.pending_orders = []
         self.waiting_clients = []
+        self.waiting_clients_frames = {} # Store frames for waiting clients to remove them on serve (by order id)
         self.taking_order = False
 
         # --- Main Layout Frames ---
@@ -39,6 +40,7 @@ class Order_Tab(tk.Frame):
 
         self.display_current_client()
 
+
     def show_random_client(self, timer):
         if timer % 60 != 0: return
         if len(self.pending_orders) >= 5: return
@@ -48,6 +50,9 @@ class Order_Tab(tk.Frame):
         
         if len(self.pending_orders) == 1 and not self.taking_order:
             self.display_current_client()
+        else:
+            self.queue_label.config(text=f"A new client has arrived! ({len(self.pending_orders)} in line)")
+
 
     def display_current_client(self):
         if not self.pending_orders:
@@ -57,29 +62,31 @@ class Order_Tab(tk.Frame):
 
         client = self.pending_orders[0]
         self.draw_stickman(trait=client.get("trait", ""))
-        self.queue_label.config(text=f"A new client has arrived! ({len(self.pending_orders)} in queue)")
+        self.queue_label.config(text=f"A new client has arrived! ({len(self.pending_orders)} in line)")
+
 
     def take_order(self):
         if self.taking_order or not self.pending_orders: return
 
         self.taking_order = True
         client = self.pending_orders[0]
-        self.controller.register_order(client["poke"])
+        order_id = self.controller.register_order(client["poke"])
         
         # Create an instance of our new pop-up window
         OrderDetailWindow(self.controller, client["poke"])
         
         # Finish the order process immediately after the pop-up closes
-        self.finish_taking_order()
+        self.finish_taking_order(order_id)
 
-    def finish_taking_order(self):
+
+    def finish_taking_order(self, order_id):
         if not self.pending_orders:
              self.taking_order = False
              return
 
         client_that_ordered = self.pending_orders.pop(0)
         self.waiting_clients.append(client_that_ordered)
-        self.add_client_to_waiting_area(client_that_ordered)
+        self.add_client_to_waiting_area(client_that_ordered, order_id)
         self.taking_order = False
 
         if self.pending_orders:
@@ -88,12 +95,22 @@ class Order_Tab(tk.Frame):
             self.stickman_canvas.delete("all")
             self.queue_label.config(text="No clients in line.")
 
-    def add_client_to_waiting_area(self, client_data):
+        print(client_that_ordered)
+
+
+    def add_client_to_waiting_area(self, client_data, order_id):
         client_frame = tk.Frame(self.waiting_area_frame, bg="lightgoldenrodyellow")
         client_canvas = tk.Canvas(client_frame, width=50, height=75, bg="lightgoldenrodyellow", highlightthickness=0)
         self.draw_stickman(canvas=client_canvas, scale=0.25, trait=client_data.get("trait", ""))
         client_canvas.pack()
         client_frame.pack(pady=5)
+        self.waiting_clients_frames[order_id] = client_frame
+
+
+    def remove_client_from_waiting_area(self, order_id):
+        self.waiting_clients_frames[order_id].destroy()
+        del self.waiting_clients_frames[order_id]
+
         
     def draw_stickman(self, canvas=None, scale=1.0, trait=""):
         """
