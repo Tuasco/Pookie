@@ -3,7 +3,7 @@ from Models.Protein import Protein
 from Models.Sauce import Sauce
 
 class Poke:
-    def __init__(self, base: str = None, vft: list = None, sauce: Sauce = None, protein: Protein = None) -> None:
+    def __init__(self, base: str = None, vft: list[VFT] = None, sauce: Sauce = None, protein: Protein = None) -> None:
         self.base = base
         # If vft is None, create a new empty list. This ensures each Poke has its own list.
         self.vft = [] if vft is None else vft

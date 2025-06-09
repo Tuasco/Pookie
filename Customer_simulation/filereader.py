@@ -1,6 +1,7 @@
 from Models.Order import Order
 from Models.Poke import Poke
 from Models.Protein import Protein
+from Models.VFT import VFT
 import csv
 
 
@@ -66,7 +67,7 @@ def file_reader_dico(filename) :
 
             dico_order = {}
             dico_order["trait"] = trait
-            dico_order["poke"] = Poke(base, vft_list, sauce, Protein(protein, cookTime))
+            dico_order["poke"] = Poke(base, [VFT(vft, (0, 0)) for vft in vft_list], sauce, Protein(protein, cookTime))
 
             orders.append(dico_order)
 

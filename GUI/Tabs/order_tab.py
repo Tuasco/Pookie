@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+from time import time
 from tkinter import scrolledtext
 from Models.Poke import Poke
 from GUI.Tabs.order_detail_window import OrderDetailWindow
@@ -15,6 +16,7 @@ class Order_Tab(tk.Frame):
         self.controller = controller
 
         self.pending_orders = []
+        self.pending_orders_time = []
         self.waiting_clients = []
         self.waiting_clients_frames = {} # Store frames for waiting clients to remove them on serve (by order id)
         self.taking_order = False
@@ -42,11 +44,12 @@ class Order_Tab(tk.Frame):
 
 
     def show_random_client(self, timer):
-        if timer % 60 != 0: return
+        if timer % 30 != 0: return
         if len(self.pending_orders) >= 5: return
 
         order = random.choice(orders)
         self.pending_orders.append(order)
+        self.pending_orders_time.append(time())
         
         if len(self.pending_orders) == 1 and not self.taking_order:
             self.display_current_client()
@@ -70,7 +73,8 @@ class Order_Tab(tk.Frame):
 
         self.taking_order = True
         client = self.pending_orders[0]
-        order_id = self.controller.register_order(client["poke"])
+        time_waited = self.pending_orders_time[0]
+        order_id = self.controller.register_order(client["poke"], time_waited)
         
         # Create an instance of our new pop-up window
         OrderDetailWindow(self.controller, client["poke"])
@@ -85,6 +89,7 @@ class Order_Tab(tk.Frame):
              return
 
         client_that_ordered = self.pending_orders.pop(0)
+        self.pending_orders_time.pop(0)
         self.waiting_clients.append(client_that_ordered)
         self.add_client_to_waiting_area(client_that_ordered, order_id)
         self.taking_order = False

@@ -9,6 +9,7 @@ from Models.VFT import VFT
 from Models.Sauce import Sauce
 from Data.Icons import Icons
 from GUI.Tabs.order_detail_window import OrderDetailWindow
+from Customer_simulation.order_grading import score
 
 from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
 import pygame
@@ -232,7 +233,7 @@ class PookieGUI(tk.Tk):
             self.order_receipts.append((order.order_id, label))
 
 
-    def register_order(self, poke):
+    def register_order(self, poke, time_waited):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
         sauce_name = poke.sauce.name if hasattr(poke.sauce, 'name') else poke.sauce
@@ -240,7 +241,7 @@ class PookieGUI(tk.Tk):
         label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=self.font_receipt, bd=1, borderwidth=0, pady=self.padding, justify="left", padx=self.padding)
         label.pack(pady=self.padding, fill="x", padx=self.padding)
         self.order_receipts.append((order_id, label))
-        self.orders.append(Order(order_id, poke, time()))
+        self.orders.append(Order(order_id, poke, time_waited))
         label.bind("<Button-1>", lambda e, oid=order_id, lbl=label: self.select_order(oid, lbl))
         return order_id
 
@@ -386,15 +387,45 @@ class PookieGUI(tk.Tk):
             messagebox.showwarning("No Order Selected", "Please select an order to serve the bowl.")
             return
         
-        tip += 4
+        tip, grade_w, grade_a, grade_c, grade_d = score(self.selected_order, self.bowls[self.active_bowl_id], self.extract_poke_layout_data())
+        self.wallet += tip
+        print(self.bowls[self.active_bowl_id])
+        print(self.selected_order)
 
-        self.tip_label.configure(text=f"Wallet: ${tip:.2f}")
-        self.pages["Serve_Tab"].display_serving_feedback(tip, 50, 50, 50, 50) # Show feedback animation in the Serve tab
+        self.tip_label.configure(text=f"Wallet: ${self.wallet:.2f}")
+        self.pages["Serve_Tab"].display_serving_feedback(self.wallet, grade_w, grade_a, grade_c, grade_d) # Show feedback animation in the Serve tab
         self.pages["Order_Tab"].remove_client_from_waiting_area(self.selected_order.order_id) # Remove client from waiting area
         self.orders.remove(self.selected_order) # Remove order from orders list
         self.redraw_order_panel() # Redraw order panel with new order list
         self.remove_bowl() # Remove the bowl from the working aread
         self.selected_order = None # Set selected order to None (no order selected)
+
+
+    def extract_poke_layout_data(self):
+        """
+        The "Inspector": Gathers all positional data for the active poke bowl.
+        Returns a dictionary with ingredient positions, sauce path, and bowl geometry.
+        """
+        if self.active_bowl_id is None:
+            return None
+
+        active_poke = self.bowls[self.active_bowl_id]
+        
+        # Collect positions of all toppings (VFTs)
+        ingredient_positions = [vft.position for vft in active_poke.vft]
+        
+        # Collect all points from the sauce path, if it exists
+        sauce_path = active_poke.sauce.path if active_poke.sauce else []
+        
+        # Package all the "inspector's notes" together
+        layout_data = {
+            "ingredient_positions": ingredient_positions,
+            "sauce_path": sauce_path,
+            "bowl_center": (self.bowl_center_x, self.bowl_center_y),
+            "bowl_radius": self.bowl_radius
+        }
+
+        return layout_data
 
 
     def sec_loop(self):

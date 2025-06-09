@@ -1,83 +1,110 @@
-#compares the prepared Poke to the ordered Poke and jugdes que "quality" of the poke
+# Compares the prepared Poke to the ordered Poke and judges the "quality" of the poke
 
-'''
-To check :
-- if all the ingredients are there
-- if cookingTime matches
-- quality of the presentation : checks if toppings are in the bowl if they're well arranged in the bowl
-'''
-'''..............................................................................................'''
-
-from Models.Order import Order
 from Models.Poke import Poke
+from Models.Order import Order
 import math
-from itertools import chain
+import numpy as np
+from time import time
 
 
-def is_ingredients_match(order) :
+def score(order: Order, made_poke: Poke, layout_data):
+    """
+    Calculates the final score and tip by calling all specialized grading functions.
     
-    ingredients_complete = True
-    ordered = order.orderedPoke
-    prepared = order.preparedPoke
-
-    if ordered.base != prepared.base :
-        ingredients_complete = False
-
-    if ordered.sauce != prepared.sauce :
-        ingredients_complete = False
-
-    if ordered.sauce != prepared.sauce :
-        ingredients_complete = False
-
-    return ingredients_complete
-
-
-def check_topping_position(order, cx, cy, r_bowl, lim_dist_toppings) : #where cx and cy are the center of the container (here a bowl) and r_bowl the radius
-    ordered = order.orderedPoke
-    prepared = order.preparedPoke
-    dico_toppings = order.preparedBowl.vft
-
-    #check if all toppings IN the bowl
-    toppings_contained = True
-    index=0
-
-    while index < len(dico_toppings) and toppings_contained :
-        x,y = dico_toppings[dico_toppings.keys()[index]]
-        toppings_contained = (x - cx)**2 + (y - cy)**2 <= r_bowl**2 #condition for coordinates of a point in a circle
-        index+=1
+    Args:
+        order (Order): The original customer order object.
+        made_poke (Poke): The poke object created by the player.
+        layout_data (dict): The positional data for ingredients and sauce.
+        
+    Returns:
+        tuple: A 5-element tuple containing (tip, wait_score, accuracy_score, cook_score, displacement_score).
+    """
+    # Call each grading function to get the score for each category
+    grade_w = check_waiting_time(order.orderTime)
+    grade_a = check_ingredients_difference(order.orderedPoke, made_poke)
+    grade_c = check_cooking_time(order.orderedPoke, made_poke)
+    grade_d = calculate_displacement_score(layout_data)
     
-
-    # checks if toppings well spread in the bowl : 
-    # we'll compare the average distance between each pair of ingredients
-    # if they're relatively similar, the ingredients are evenly spread (we'll compare to a threshold lim_dist_toppings adapted to the size of the bowl)
-    toppings_balanced = True
-    total_dist=0
-    pair_count=0
-    ingredients_coord_from_dico = list(dico_toppings.values())
-    list_coord_toppings = list(chain(*[item if isinstance(item, tuple) else (item,) for item in ingredients_coord_from_dico]))
+    # Calculate the tip based on the sum of all grades
+    total_score = grade_w + grade_a + grade_c + grade_d
+    tip = total_score / 100.0  # e.g., a total score of 250 results in a $2.50 tip
     
-    for i in range(len(list_coord_toppings)):
-        for j in range(i + 1, len(list_coord_toppings)):
-            total_dist += math.sqrt((list_coord_toppings[j][0] - list_coord_toppings[i][0])**2 + (list_coord_toppings[j][1] - list_coord_toppings[i][1])**2)
-            pair_count += 1
-
-    toppings_balanced = total_dist/pair_count <= lim_dist_toppings
+    # Return the final 5-element tuple in the specified order
+    return (tip, grade_w, grade_a, grade_c, grade_d)
 
 
-    return toppings_contained, toppings_balanced
+def check_waiting_time(order_timestamp):
+    """
+    Grades the waiting time. Score hits 0 if the wait is 120 seconds or more.
+    """
+    wait_penalty = (time() - order_timestamp) * (100.0 / 60.0)
+    score = int(max(0, 100 - wait_penalty) * 2)
+    return score if score < 100 else 100
 
 
-def check_cooking_time(order, threshold):
-    well_cooked = True
-    diff_cook_time = abs(order.orderedPoke.cookTime - order.preparedPoke.cookTime)
+def check_ingredients_difference(order_poke: Poke, made_poke: Poke):
+    """
+    Grades the accuracy of ingredients. Score hits 0 if 4 or more ingredients are wrong.
+    """
+    # This logic correctly counts both extra ingredients and missing ingredients.
+    wrong_ingredients_count = sum([1 for vft in made_poke.vft if vft.name not in [t_vft.name for t_vft in order_poke.vft]]) \
+                            + sum([1 for vft in order_poke.vft if vft.name not in [t_vft.name for t_vft in made_poke.vft]])
+    
+    penalty = wrong_ingredients_count * 25
+    return max(0, 100 - penalty)
 
-    if diff_cook_time > threshold :
-        well_cooked = False
 
-    return well_cooked
+def check_cooking_time(order_poke: Poke, made_poke: Poke):
+    """
+    Grades the cooking time accuracy. Score hits 0 if the time is off by 3 units (30 seconds) or more.
+    """
+    if made_poke.protein is None:
+        return 0
+
+    order_cook_time = order_poke.protein.cookTime if order_poke.protein.cookTime != -1 else 0
+    made_cook_time = made_poke.protein.cookTime if made_poke.protein.cookTime != -1 else 0
+    
+    time_difference = abs(order_cook_time - made_cook_time)
+    penalty = time_difference * 34
+    return max(0, 100 - penalty)
 
 
-def score(order) : 
-    '''calculates score based on the previous functions'''
- 
+def calculate_displacement_score(layout_data):
+    """
+    The "Judge": Scores the poke's layout based on the collected data.
+    Returns a score from 0 to 100.
+    """
+    if not layout_data:
+        return 50 # Default score if there's no data
 
+    # --- Ingredient Score: How evenly are toppings spread? ---
+    ingredient_positions = layout_data["ingredient_positions"]
+    bowl_center = layout_data["bowl_center"]
+        
+    if len(ingredient_positions) > 1:
+        distances = [math.hypot(pos[0] - bowl_center[0], pos[1] - bowl_center[1]) for pos in ingredient_positions]
+        distance_std_dev = np.std(distances)
+        ingredient_score = max(0, 100 - distance_std_dev * 1.5)
+    else:
+        ingredient_score = 50 # Score if 0 or 1 ingredient
+
+    # --- Sauce Score: How evenly is the sauce distributed? ---
+    sauce_path = layout_data["sauce_path"]
+        
+    if len(sauce_path) > 10:
+        x_coords = [p[0] for p in sauce_path]
+        y_coords = [p[1] for p in sauce_path]
+        x_std_dev = np.std(x_coords)
+        y_std_dev = np.std(y_coords)
+            
+        if min(x_std_dev, y_std_dev) > 0:
+            spread_ratio = max(x_std_dev, y_std_dev) / min(x_std_dev, y_std_dev)
+        else:
+            spread_ratio = 5
+                
+        sauce_score = max(0, 100 - (spread_ratio - 1) * 20)
+    else:
+        sauce_score = 50 # Score for little or no sauce
+
+    final_score = (ingredient_score + sauce_score) / 2
+    return int(final_score)
