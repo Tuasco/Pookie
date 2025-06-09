@@ -35,9 +35,9 @@ def score(order: Order, made_poke: Poke, layout_data):
 
 def check_waiting_time(order_timestamp):
     """
-    Grades the waiting time. Score hits 0 if the wait is 120 seconds or more.
+    Grades the waiting time. Score hits 0 if the wait is 240 seconds or more.
     """
-    wait_penalty = (time() - order_timestamp) * (100.0 / 60.0)
+    wait_penalty = (time() - order_timestamp) * (100.0 / 120.0)
     score = int(max(0, 100 - wait_penalty) * 2)
     return score if score < 100 else 100
 
