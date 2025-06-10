@@ -221,7 +221,7 @@ class PookieGUI(tk.Tk):
             # Recreate the text for the receipt label (logic from your register_order)
             vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
             sauce_name = poke.sauce.name if hasattr(poke.sauce, 'name') else poke.sauce
-            poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein.name}"
+            poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*').replace('\'', '')}\n- {sauce_name}\n- {poke.protein.name}"
             
             label = tk.Label(self.order_frame, text=f"{order.order_id}\n{poke_text}", bg="white", font=self.font_receipt, bd=1, borderwidth=0, pady=self.padding, justify="left", padx=self.padding)
             label.pack(pady=self.padding, fill="x", padx=self.padding)
@@ -237,7 +237,7 @@ class PookieGUI(tk.Tk):
         order_id = f"Order #{1001+len(self.order_receipts)}"
         vft_names = [item.name for item in poke.vft] if (poke.vft and not isinstance(poke.vft[0], str)) else poke.vft
         sauce_name = poke.sauce.name if hasattr(poke.sauce, 'name') else poke.sauce
-        poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*')}\n- {sauce_name}\n- {poke.protein}"
+        poke_text = f"- {poke.base.capitalize()}\n* {str(vft_names)[1:-2].replace(',', '\n*').replace('\'', '')}\n- {sauce_name}\n- {poke.protein}"
         label = tk.Label(self.order_frame, text=f"{order_id}\n{poke_text}", bg="white", font=self.font_receipt, bd=1, borderwidth=0, pady=self.padding, justify="left", padx=self.padding)
         label.pack(pady=self.padding, fill="x", padx=self.padding)
         self.order_receipts.append((order_id, label))
@@ -396,11 +396,9 @@ class PookieGUI(tk.Tk):
         
         tip, grade_w, grade_a, grade_c, grade_d = score(self.selected_order, self.bowls[self.active_bowl_id], self.extract_poke_layout_data())
         self.wallet += tip
-        print(self.bowls[self.active_bowl_id])
-        print(self.selected_order)
 
         self.tip_label.configure(text=f"Wallet: ${self.wallet:.2f}")
-        self.pages["Serve_Tab"].display_serving_feedback(self.wallet, grade_w, grade_a, grade_c, grade_d) # Show feedback animation in the Serve tab
+        self.pages["Serve_Tab"].display_serving_feedback(tip, grade_w, grade_a, grade_c, grade_d) # Show feedback animation in the Serve tab
         self.pages["Order_Tab"].remove_client_from_waiting_area(self.selected_order.order_id) # Remove client from waiting area
         self.orders.remove(self.selected_order) # Remove order from orders list
         self.redraw_order_panel() # Redraw order panel with new order list

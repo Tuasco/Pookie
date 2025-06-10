@@ -20,6 +20,7 @@ class Order_Tab(tk.Frame):
         self.waiting_clients = []
         self.waiting_clients_frames = {} # Store frames for waiting clients to remove them on serve (by order id)
         self.taking_order = False
+        self.next_client_in = 30
 
         # --- Main Layout Frames ---
         self.counter_frame = tk.Frame(self, bg=bg_color)
@@ -44,9 +45,10 @@ class Order_Tab(tk.Frame):
 
 
     def show_random_client(self, timer):
-        if timer % 30 != 0: return
-        if len(self.pending_orders) >= 5: return
-
+        if timer % self.next_client_in != 0 or len(self.pending_orders) >= 3:
+            return
+        
+        self.next_client_in = random.randint(30, 60)  # Randomize next client arrival time
         order = random.choice(orders)
         self.pending_orders.append(order)
         self.pending_orders_time.append(time())

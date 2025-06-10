@@ -49,7 +49,7 @@ class OrderDetailWindow(tk.Toplevel):
             details += f"Base: {poke.base.capitalize()}\n\n"
         
         if poke.protein and poke.protein.name:
-            cook_time_str = f"(Cook for {poke.protein.cookTime}s)" if poke.protein.cookTime and int(poke.protein.cookTime) > 0 else "(No cooking)"
+            cook_time_str = f"(Cook for {poke.protein.cookTime} min)" if poke.protein.cookTime and int(poke.protein.cookTime) > 0 else "(No cooking)"
             details += f"Protein: {poke.protein.name.capitalize()} {cook_time_str}\n\n"
 
         if poke.sauce:

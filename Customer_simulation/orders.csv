@@ -1,13 +1,13 @@
 Order_id,Base,VFT,Sauce,Protein,Cooking time,Trait
 1,pasta,carrot;dragon fruit;avocado;tomato,soy sauce,egg,2,red hat
-2,quinoa,edamame;mint;corn;carrot;lemon,soy sauce,salmon,3,biker
-3,buckwheat,edamame;kiwi;melon,sour cream,salmon,2,happy face and hat
+2,quinoa,carrot;edamame;mint;corn;lemon,soy sauce,salmon,3,biker
+3,buckwheat,kiwi;melon;edamame,sour cream,salmon,2,happy face and hat
 4,rice,watermelon;brocoli;lemon,sriracha,shrimp,2,sad
-5,pasta,avocado;mint;beet;cucumber,sour cream,chicken,3,stylish
-6,quinoa,carrot;cucumber;corn;avocado,soy sauce,tofu,2,sunglasses
+5,pasta,avocado;beet;cucumber;mint,sour cream,chicken,3,stylish
+6,quinoa,carrot;cucumber;avocado;corn,soy sauce,tofu,2,sunglasses
 7,salad,mushroom;carrot;kiwi;sesame,wasabi,shrimp,3,glasses
 8,buckwheat,mushroom;avocado;peas;melon;dragon fruit,soy sauce,shrimp,4,nerd
-9,rice,onion;edamame;beet;raspberry,sriracha,salmon,3,artist
+9,rice,onion;beet;raspberry;edamame,sriracha,salmon,3,artist
 10,brown rice,peas;grapes;avocado;melon;sesame,soy sauce,meat,4,worker
 11,quinoa,kiwi;grapes;raspberry,sour cream,chicken,2,superhero
 12,rice,raspberry;tomato;cucumber;brocoli;sesame,wasabi,egg,1,scientist
