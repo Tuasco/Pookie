@@ -48,7 +48,7 @@ class Order_Tab(tk.Frame):
         if timer % self.next_client_in != 0 or len(self.pending_orders) >= 3:
             return
         
-        self.next_client_in = random.randint(30, 60)  # Randomize next client arrival time
+        self.next_client_in = random.randint(50, 90)  # Randomize next client arrival time
         order = random.choice(orders)
         self.pending_orders.append(order)
         self.pending_orders_time.append(time())

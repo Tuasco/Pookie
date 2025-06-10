@@ -81,8 +81,6 @@ class PookieGUI(tk.Tk):
         self.size_selection_canvas = int(screen_height * 0.11)
         self.size_selection_icon = int(self.size_selection_canvas * 0.5)
         self.padding = int(screen_height / 120)
-            
-        pygame.mixer.music.stop()
         
         # --- UI Initialization ---
         nav_bar = tk.Frame(self, bg="lightpink")
