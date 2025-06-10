@@ -28,7 +28,7 @@ class Icons:
             self.canvas.create_image(x, y, image=self.icons[name], anchor="center")
         else:
             print(f"Icon '{name}' not found.")
-
+    
 
 
 if __name__ == "main":

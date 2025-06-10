@@ -1,14 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
-from time import time
 from functools import partial
+from copy import deepcopy
 
 from Models.Poke import Poke
 from Models.Order import Order
+from Models.Protein import Protein
 from Models.VFT import VFT
 from Models.Sauce import Sauce
 from Data.Icons import Icons
-from GUI.Tabs.order_detail_window import OrderDetailWindow
 from Customer_simulation.order_grading import score
 
 from GUI.Tabs import order_tab, base_tab, veg_fruit_tab, protein_tab, extras_sauces_tab, serve_tab
@@ -77,7 +77,7 @@ class PookieGUI(tk.Tk):
 
         # Sizes for Icons and Canvases
         self.size_workspace_base_icon = int(self.responsive_workspace_height * 0.6)
-        self.size_workspace_topping_icon = int(self.responsive_workspace_height * 0.2)
+        self.size_workspace_topping_icon = int(self.responsive_workspace_height * 0.3)
         self.size_selection_canvas = int(screen_height * 0.11)
         self.size_selection_icon = int(self.size_selection_canvas * 0.5)
         self.padding = int(screen_height / 120)
@@ -336,7 +336,11 @@ class PookieGUI(tk.Tk):
         if self.ingredient_to_place:
             distance_sq = (event.x - self.bowl_center_x)**2 + (event.y - self.bowl_center_y)**2
             if distance_sq <= self.bowl_radius**2:
-                self.bowls[self.active_bowl_id].vft.append(VFT(name=self.ingredient_to_place, position=(event.x, event.y)))
+                if type(self.ingredient_to_place) is str:
+                    self.bowls[self.active_bowl_id].vft.append(VFT(name=self.ingredient_to_place, position=(event.x, event.y)))
+                elif type(self.ingredient_to_place) is Protein: 
+                    self.bowls[self.active_bowl_id].protein = deepcopy(self.ingredient_to_place)
+                    self.bowls[self.active_bowl_id].protein.position = (event.x, event.y)
             self.ingredient_to_place = None 
         
         if self.is_drawing_sauce:
@@ -377,6 +381,9 @@ class PookieGUI(tk.Tk):
             for vft_item in active_poke.vft:
                 self.toppings_icon_manager.draw_icon(vft_item.name.replace(" ", "_").lower(), vft_item.position[0], vft_item.position[1])
 
+        if active_poke.protein:
+            self.toppings_icon_manager.draw_icon(active_poke.protein.name.replace(" ", "_").lower(), active_poke.protein.position[0], active_poke.protein.position[1])
+
 
     def serve_poke(self):
         if self.active_bowl_id is None:
@@ -412,7 +419,7 @@ class PookieGUI(tk.Tk):
         active_poke = self.bowls[self.active_bowl_id]
         
         # Collect positions of all toppings (VFTs)
-        ingredient_positions = [vft.position for vft in active_poke.vft]
+        ingredient_positions = [vft.position for vft in active_poke.vft] + [active_poke.protein.position] if active_poke.protein else []
         
         # Collect all points from the sauce path, if it exists
         sauce_path = active_poke.sauce.path if active_poke.sauce else []

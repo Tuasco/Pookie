@@ -1,7 +1,8 @@
 class Protein:
-    def __init__(self, name: str, cookTime: int = -1) -> None:
+    def __init__(self, name: str, position: tuple[float, float], cookTime: int = -1) -> None:
         self.name = name
         self.cookTime = cookTime
+        self.position = position
 
 
     def __str__(self) -> str:

@@ -1,15 +1,15 @@
 Order_id,Base,VFT,Sauce,Protein,Cooking time,Trait
-1,pasta,carrot;dragon fruit;avocado;tomato,soy sauce,egg,6,red hat
-2,quinoa,edamame;mint;corn;carrot;lemon,soy sauce,salmon,7,biker
-3,buckwheat,edamame;kiwi;melon,soy sauce,salmon,8,happy face and hat
-4,rice,watermelon;brocoli;lemon,soy sauce,shrimp,9,sad
-5,pasta,avocado;mint;beet;cucumber,spicy mayo,chicken,9,stylish
-6,quinoa,carrot;cucumber;corn;avocado,soy sauce,tofu,7,sunglasses
-7,salad,mushroom;carrot;kiwi,spicy mayo,shrimp,10,glasses
-8,buckwheat,mushroom;avocado;peas;melon;dragon fruit,soy sauce,shrimp,3,nerd
-9,rice,onion;edamame;beet;raspberry,soy sauce,salmon,10,artist
-10,brown rice,peas;grapes;avocado;melon;edamame,soy sauce,meat,7,worker
-11,quinoa,kiwi;grapes;raspberry,soy sauce,meat,10,superhero
-12,rice,raspberry;tomato;cucumber;beet;brocoli,spicy mayo,egg,8,scientist
-13,brown rice,onion;carrot;peas;brocoli;edamame,soy sauce,meat,4,royalty
-14,salad,dragon fruit;watermelon;beet;lemon;mint,soy sauce,tofu,10,villain
+1,pasta,carrot;dragon fruit;avocado;tomato,soy sauce,egg,2,red hat
+2,quinoa,edamame;mint;corn;carrot;lemon,soy sauce,salmon,3,biker
+3,buckwheat,edamame;kiwi;melon,sour cream,salmon,2,happy face and hat
+4,rice,watermelon;brocoli;lemon,sriracha,shrimp,2,sad
+5,pasta,avocado;mint;beet;cucumber,sour cream,chicken,3,stylish
+6,quinoa,carrot;cucumber;corn;avocado,soy sauce,tofu,2,sunglasses
+7,salad,mushroom;carrot;kiwi;sesame,wasabi,shrimp,3,glasses
+8,buckwheat,mushroom;avocado;peas;melon;dragon fruit,soy sauce,shrimp,4,nerd
+9,rice,onion;edamame;beet;raspberry,sriracha,salmon,3,artist
+10,brown rice,peas;grapes;avocado;melon;sesame,soy sauce,meat,4,worker
+11,quinoa,kiwi;grapes;raspberry,sour cream,chicken,2,superhero
+12,rice,raspberry;tomato;cucumber;brocoli;sesame,wasabi,egg,1,scientist
+13,brown rice,onion;carrot;peas;brocoli;edamame,sriracha,meat,5,royalty
+14,salad,dragon fruit;watermelon;beet;lemon;mint,sour cream,tofu,1,villain

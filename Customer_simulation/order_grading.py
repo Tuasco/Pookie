@@ -56,7 +56,7 @@ def check_ingredients_difference(order_poke: Poke, made_poke: Poke):
 
 def check_cooking_time(order_poke: Poke, made_poke: Poke):
     """
-    Grades the cooking time accuracy. Score hits 0 if the time is off by 3 units (30 seconds) or more.
+    Grades the cooking time accuracy. Score hits 0 if the time is off by 3 units (30 seconds) or more and the protein is not the one asked for.
     """
     if made_poke.protein is None:
         return 0
@@ -64,9 +64,7 @@ def check_cooking_time(order_poke: Poke, made_poke: Poke):
     order_cook_time = order_poke.protein.cookTime if order_poke.protein.cookTime != -1 else 0
     made_cook_time = made_poke.protein.cookTime if made_poke.protein.cookTime != -1 else 0
     
-    time_difference = abs(order_cook_time - made_cook_time)
-    penalty = time_difference * 34
-    return max(0, 100 - penalty)
+    return (50 if order_poke.protein.name == made_poke.protein.name else 0) + max(0, 50 - abs(order_cook_time - made_cook_time) * 17)
 
 
 def calculate_displacement_score(layout_data):

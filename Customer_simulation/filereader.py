@@ -67,7 +67,7 @@ def file_reader_dico(filename) :
 
             dico_order = {}
             dico_order["trait"] = trait
-            dico_order["poke"] = Poke(base, [VFT(vft, (0, 0)) for vft in vft_list], sauce, Protein(protein, cookTime))
+            dico_order["poke"] = Poke(base, [VFT(vft, (0, 0)) for vft in vft_list], sauce, Protein(protein, (0, 0), int(cookTime)))
 
             orders.append(dico_order)
 
