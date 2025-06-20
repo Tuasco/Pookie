@@ -1,8 +1,10 @@
 import tkinter as tk
+import math
+
 import Data.Icons as Icons
 from Models.Protein import Protein
-from time import time
-import math
+from Services.bowl_service import set_ingredient_for_placement
+from Services.workspace_service import draw_bowl_and_icon
 
 protein_names=["tofu", "shrimp", "salmon", "meat", "egg", "chicken"]
 bg_color="seashell"  # Define a background color for the tab
@@ -121,7 +123,7 @@ class Fire(tk.Frame):
         if self.protein_name is None:
             return
         
-        self.controller.set_ingredient_for_placement(self.remove_protein())
+        set_ingredient_for_placement(self. controller, self.remove_protein())
     
 
 class ProteinBowl(tk.Frame):
@@ -140,17 +142,10 @@ class ProteinBowl(tk.Frame):
         
         icon_size = self.controller.size_selection_icon
         self.icon_manager = Icons.Icons(self.bowl_canvas, size=(icon_size, icon_size))
-        self.draw_bowl_and_icon(protein_name)
+        draw_bowl_and_icon(self, protein_name)
         self.bowl_canvas.config(cursor="hand2")
         self.bowl_canvas.bind("<Button-1>", self.on_select_protein)
         label.bind("<Button-1>", self.on_select_protein)
-
-
-    def draw_bowl_and_icon(self, protein):
-        canvas_size = self.controller.size_selection_canvas
-        padding = int(canvas_size * 0.08)
-        self.bowl_canvas.create_oval(padding, padding, canvas_size-padding, canvas_size-padding, fill="burlywood", outline="#8B4513", width=2)
-        self.icon_manager.draw_icon(protein.lower(), canvas_size/2, canvas_size/2)
 
 
     def on_select_protein(self, event):
@@ -189,10 +184,3 @@ class Protein_Tab(tk.Frame):
                     return True
         print(f"No available woks for {protein_name}.")
         return False
-        
-
-if __name__=="__main__":
-    root = tk.Tk()
-    app = Protein_Tab(parent=root, controller=None)
-    app.pack(expand=True, fill="both")
-    root.mainloop()

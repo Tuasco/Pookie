@@ -1,9 +1,13 @@
 import tkinter as tk
+
 from Data.Icons import Icons
+from Services.bowl_service import set_ingredient_for_placement
+from Services.workspace_service import draw_bowl_and_icon
 
 veggies= ["carrot", "broccoli", "beet", "tomato", "cucumber", "mushroom", "onion", "peas"]
 fruits = ["dragon fruit", "melon", "watermelon", "grapes", "kiwi", "avocado", "raspberry"]
 bg_color = "seashell"
+
 
 class Veg_Fruit_Tab(tk.Frame):
     def __init__(self, parent, controller):
@@ -29,6 +33,7 @@ class Veg_Fruit_Tab(tk.Frame):
         for fruit in fruits:
             bowl_widget = VegFruitBowl(fruits_container, veg_fruit_name=fruit, controller=self.controller)
             bowl_widget.pack(side=tk.LEFT, padx=self.controller.padding, pady=self.controller.padding)
+            
        
 class VegFruitBowl(tk.Frame):
     def __init__(self, parent, veg_fruit_name, controller):
@@ -46,17 +51,7 @@ class VegFruitBowl(tk.Frame):
         icon_size = self.controller.size_selection_icon
         self.icon_manager = Icons(self.bowl_canvas, size=(icon_size, icon_size))
         
-        self.draw_bowl_and_icon(veg_fruit_name.replace(" ", "_"))
+        draw_bowl_and_icon(self, veg_fruit_name)
 
-        self.bowl_canvas.bind("<Button-1>", self.on_select)
-        label.bind("<Button-1>", self.on_select)
-
-
-    def draw_bowl_and_icon(self, veg_fruit):
-        canvas_size = self.controller.size_selection_canvas
-        padding = int(canvas_size * 0.08)
-        self.bowl_canvas.create_oval(padding, padding, canvas_size-padding, canvas_size-padding, fill="burlywood", outline="saddlebrown", width=2)
-        self.icon_manager.draw_icon(veg_fruit.lower(), canvas_size/2, canvas_size/2)
-
-    def on_select(self, event):
-        self.controller.set_ingredient_for_placement(self.veg_fruit_name)
+        self.bowl_canvas.bind("<Button-1>", lambda e: set_ingredient_for_placement(self.controller, self.veg_fruit_name))
+        label.bind("<Button-1>", lambda e: set_ingredient_for_placement(self.controller, self.veg_fruit_name))

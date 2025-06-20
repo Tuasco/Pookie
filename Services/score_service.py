@@ -1,10 +1,9 @@
-# Compares the prepared Poke to the ordered Poke and judges the "quality" of the poke
-
-from Models.Poke import Poke
-from Models.Order import Order
 import math
 import numpy as np
 from time import time
+
+from Models.Order import Order
+from Models.Poke import Poke
 
 
 def score(order: Order, made_poke: Poke, layout_data):
@@ -73,7 +72,7 @@ def calculate_displacement_score(layout_data):
     Returns a score from 0 to 100.
     """
     if not layout_data:
-        return 50 # Default score if there's no data
+        return 0 # Default score if there's no data
 
     # --- Ingredient Score: How evenly are toppings spread? ---
     ingredient_positions = layout_data["ingredient_positions"]

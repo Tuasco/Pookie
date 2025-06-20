@@ -1,5 +1,7 @@
 import tkinter as tk
 from Data.Icons import Icons
+from Services.bowl_service import add_new_bowl, add_base_to_bowl
+from Services.workspace_service import draw_bowl_and_icon
 
 base_names = ["salad", "rice", "brown rice", "quinoa", "pasta", "buckwheat"]
 bg_color = "seashell"  # Define a background color for the tab
@@ -14,7 +16,7 @@ class Base_Tab(tk.Frame):
             self, 
             text="+ New Bowl", 
             font=self.controller.font_button,
-            command=self.controller.add_new_bowl
+            command=lambda: add_new_bowl(self.controller),
         )
         new_bowl_button.pack(side="left", pady=self.controller.padding*2, padx=self.controller.padding)
 
@@ -30,6 +32,7 @@ class Base_Tab(tk.Frame):
         for base in base_names:
             bowl_widget = BaseBowl(bowls_container, base_name=base, controller=self.controller)
             bowl_widget.pack(side=tk.LEFT, padx=self.controller.padding, pady=self.controller.padding)
+
 
 class BaseBowl(tk.Frame):
     def __init__(self, parent, base_name, controller):
@@ -47,16 +50,7 @@ class BaseBowl(tk.Frame):
         icon_size = self.controller.size_selection_icon
         self.icon_manager = Icons(self.bowl_canvas, size=(icon_size, icon_size))
         
-        self.draw_bowl_and_icon(base_name.replace(" ", "_"))
+        draw_bowl_and_icon(self, base_name)
 
-        self.bowl_canvas.bind("<Button-1>", self.on_select_base)
-        label.bind("<Button-1>", self.on_select_base)
-
-    def draw_bowl_and_icon(self, base):
-        canvas_size = self.controller.size_selection_canvas
-        padding = int(canvas_size * 0.08)
-        self.bowl_canvas.create_oval(padding, padding, canvas_size-padding, canvas_size-padding, fill="burlywood", outline="saddlebrown", width=2)
-        self.icon_manager.draw_icon(base.lower(), canvas_size/2, canvas_size/2)
-
-    def on_select_base(self, event):
-        self.controller.add_base_to_bowl(self.base_name)
+        self.bowl_canvas.bind("<Button-1>", lambda e: add_base_to_bowl(self.controller, self.base_name))
+        label.bind("<Button-1>", lambda e: add_base_to_bowl(self.controller, self.base_name))

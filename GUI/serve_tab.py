@@ -1,8 +1,9 @@
-# In serve_tab.py
-
 import tkinter as tk
 
+from Services.serve_service import serve_poke
+
 bg_color = "seashell"  # Background color for the tab
+
 
 class Serve_Tab(tk.Frame):
     """Class representing the serve tab in the Pookie GUI."""
@@ -15,7 +16,7 @@ class Serve_Tab(tk.Frame):
         label.pack(pady=self.controller.padding)
     
         # The button command points back to the controller's function
-        self.serve_button = tk.Button(self, text="Serve", font=self.controller.font_title, command=self.controller.serve_poke, bg="lightgreen", fg="white", borderwidth=0, highlightthickness=0, padx=5, pady=5, cursor="hand2")
+        self.serve_button = tk.Button(self, text="Serve", font=self.controller.font_title, command=lambda: serve_poke(self.controller), bg="lightgreen", fg="white", borderwidth=0, highlightthickness=0, padx=5, pady=5, cursor="hand2")
         self.serve_button.pack(pady=self.controller.padding)
 
         # --- Feedback Stars Setup ---

@@ -3,10 +3,12 @@ import random
 from time import time
 from tkinter import scrolledtext
 from Models.Poke import Poke
-from GUI.Tabs.order_detail_window import OrderDetailWindow
-from Customer_simulation.filereader import file_reader_dico
+from GUI.order_detail_window import OrderDetailWindow
+from Services.io_service import file_reader_dico
 
-orders = file_reader_dico("Customer_simulation/orders.csv")
+from Services.order_service import register_order
+
+orders = file_reader_dico("www/orders.csv")
 bg_color = "seashell"
 
 
@@ -76,7 +78,7 @@ class Order_Tab(tk.Frame):
         self.taking_order = True
         client = self.pending_orders[0]
         time_waited = self.pending_orders_time[0]
-        order_id = self.controller.register_order(client["poke"], time_waited)
+        order_id = register_order(self.controller, client["poke"], time_waited)
         
         # Create an instance of our new pop-up window
         OrderDetailWindow(self.controller, client["poke"])
